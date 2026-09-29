@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('laporans', function (Blueprint $table) {
+            $table->foreignId('verified_by')->nullable()->after('staff_id')
+                  ->constrained('users')->nullOnDelete();
+            $table->timestamp('verified_at')->nullable()->after('verified_by');
+            $table->enum('moderation_status', ['pending', 'approved', 'rejected'])
+                  ->default('pending')->after('verified_at');
+            $table->text('alasan_moderasi')->nullable()->after('moderation_status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('laporans', function (Blueprint $table) {
+            $table->dropForeign(['verified_by']);
+            $table->dropColumn(['verified_by', 'verified_at', 'moderation_status', 'alasan_moderasi']);
+        });
+    }
+};
