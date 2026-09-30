@@ -138,7 +138,6 @@ class AdminController extends Controller
 
         // Handle aksi
         if ($data['aksi'] === 'tolak_laporan') {
-            // Set status = ditolak (masih ada di histori)
             $komplain->laporan->update([
                 'status'            => 'ditolak',
                 'moderation_status' => 'rejected',
@@ -157,11 +156,9 @@ class AdminController extends Controller
             return back()->with('success', 'Laporan ditolak. Tetap tersimpan di histori.');
 
         } elseif ($data['aksi'] === 'hapus_laporan') {
-            // Hapus permanen dari database
             $laporan = $komplain->laporan;
 
             if ($laporan) {
-                // Hapus file foto
                 if ($laporan->foto_bukti && Storage::disk('public')->exists($laporan->foto_bukti)) {
                     Storage::disk('public')->delete($laporan->foto_bukti);
                 }
@@ -169,7 +166,6 @@ class AdminController extends Controller
                     Storage::disk('public')->delete($laporan->foto_perbaikan);
                 }
 
-                // Hapus relasi dulu (FK constraint)
                 $laporan->komplains()->delete();
                 $laporan->statusLogs()->delete();
                 $laporan->delete();
@@ -187,27 +183,45 @@ class AdminController extends Controller
     public function userIndex()
     {
         $users = User::where('role', '!=', 'super_admin')
-            ->where('status_akun', 'approved')
             ->latest()->get();
 
         return view('admin.users', compact('users'));
     }
 
+    /**
+     * Tambah user baru (Admin bisa tambah user, staff, atau admin)
+     * - User & Staff → langsung approved
+     * - Admin → pending, tunggu approval Super Admin
+     */
     public function userStore(Request $request)
     {
         $data = $request->validate([
             'name'       => 'required|string|max:100',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-            'role'       => 'required|in:user,staff',
+            'role'       => 'required|in:user,staff,admin',
             'nis_nip'    => 'nullable|string',
             'kelas'      => 'nullable|string',
             'no_telepon' => 'nullable|string',
         ]);
 
-        $data['password']    = Hash::make($data['password']);
-        $data['is_approved'] = true;
+        $data['password'] = Hash::make($data['password']);
+
+        // Kalau admin → perlu approval Super Admin dulu
+        if ($data['role'] === 'admin') {
+            $data['status_akun'] = 'pending';
+            $data['is_approved'] = false;
+
+            User::create($data);
+
+            return back()->with('success',
+                "Admin {$data['name']} berhasil diajukan. Menunggu approval Super Admin."
+            );
+        }
+
+        // User & Staff → langsung aktif
         $data['status_akun'] = 'approved';
+        $data['is_approved'] = true;
 
         User::create($data);
 
