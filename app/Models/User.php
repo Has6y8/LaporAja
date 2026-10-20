@@ -11,7 +11,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'email', 'password', 'role',
-        'nis_nip', 'kelas', 'no_telepon', 'is_approved',
+        'nisn_nip', 'kelas', 'no_telepon', 'is_approved', // <-- Ubah ke nisn_nip
         'alasan_pengajuan', 'status_akun', 'catatan_penolakan',
     ];
 

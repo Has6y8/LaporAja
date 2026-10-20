@@ -37,8 +37,8 @@
                         </div>
 
                         <div class="small text-secondary mt-2 ms-1">
-                            @if($u->nis_nip)
-                                <i class="bi bi-card-text me-1"></i> NIS/NIP: {{ $u->nis_nip }}
+                            @if($u->nisn_nip)
+                                <i class="bi bi-card-text me-1"></i> NISN/NIP: {{ $u->nisn_nip }}
                             @endif
                             @if($u->kelas)
                                 <span class="ms-3"><i class="bi bi-mortarboard me-1"></i> Kelas: {{ $u->kelas }}</span>

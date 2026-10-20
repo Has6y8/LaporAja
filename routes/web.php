@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     StaffController,
     SuperAdminController,
     KomplainController,
+    ProfileController, // <-- Tambahan Profile
 };
 use Illuminate\Support\Facades\Route;
 
@@ -26,21 +27,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/histori',   [DashboardController::class, 'histori'])->name('histori');
 
+    // ===== PROFIL =====
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
     // ===== USER =====
     Route::middleware('role:user')->group(function () {
         Route::get('/laporan/create', [LaporanController::class, 'create'])->name('laporan.create');
         Route::post('/laporan',       [LaporanController::class, 'store'])->name('laporan.store');
     });
 
-    // Detail laporan (semua role)
-    Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
-
-    // ===== KOMPLAIN (user & staff bisa kirim) =====
+    // ===== KOMPLAIN =====
     Route::middleware('role:user,staff')->group(function () {
         Route::get('/laporan/{laporan}/komplain',  [KomplainController::class, 'create'])->name('komplain.create');
         Route::post('/laporan/{laporan}/komplain', [KomplainController::class, 'store'])->name('komplain.store');
-        Route::get('/komplain-saya',                [KomplainController::class, 'index'])->name('komplain.index');
+        Route::get('/komplain-saya',               [KomplainController::class, 'index'])->name('komplain.index');
     });
+
+    // Detail laporan (semua role)
+    Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
 
     // ===== STAFF =====
     Route::middleware('role:staff')->group(function () {
@@ -50,18 +56,11 @@ Route::middleware('auth')->group(function () {
 
     // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
-        // Verifikasi laporan (supervisor)
         Route::get('/admin/verifikasi', [AdminController::class, 'verifikasiIndex'])->name('admin.verifikasi');
         Route::put('/admin/verifikasi/{laporan}', [AdminController::class, 'verifikasi'])->name('admin.verifikasi.proses');
-
-        // Update status
         Route::put('/admin/laporan/{laporan}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
-
-        // Komplain
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
-
-        // Kelola user
         Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
         Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
         Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');

@@ -3,9 +3,7 @@
 <ul class="sidebar-menu">
     <li class="menu-label">Menu</li>
 
-    {{-- ============================================
-         DASHBOARD (semua role)
-         ============================================ --}}
+    {{-- DASHBOARD (semua role) --}}
     <li>
         <a href="{{ route('dashboard') }}"
            class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -13,9 +11,7 @@
         </a>
     </li>
 
-    {{-- ============================================
-         USER MENU
-         ============================================ --}}
+    {{-- USER MENU --}}
     @if($user->isUser())
         <li>
             <a href="{{ route('laporan.create') }}"
@@ -23,7 +19,6 @@
                 <i class="bi bi-plus-circle-fill"></i> Buat Laporan
             </a>
         </li>
-
         <li>
             <a href="{{ route('komplain.index') }}"
                class="menu-item {{ request()->routeIs('komplain.*') ? 'active' : '' }}">
@@ -41,9 +36,7 @@
         </li>
     @endif
 
-    {{-- ============================================
-         STAFF MENU
-         ============================================ --}}
+    {{-- STAFF MENU --}}
     @if($user->isStaff())
         <li>
             <a href="{{ route('staff.laporan') }}"
@@ -57,7 +50,6 @@
                 @endif
             </a>
         </li>
-
         <li>
             <a href="{{ route('komplain.index') }}"
                class="menu-item {{ request()->routeIs('komplain.*') ? 'active' : '' }}">
@@ -75,9 +67,7 @@
         </li>
     @endif
 
-    {{-- ============================================
-         HISTORI (semua role)
-         ============================================ --}}
+    {{-- HISTORI (semua role) --}}
     <li>
         <a href="{{ route('histori') }}"
            class="menu-item {{ request()->routeIs('histori') ? 'active' : '' }}">
@@ -85,12 +75,17 @@
         </a>
     </li>
 
-    {{-- ============================================
-         ADMIN MENU (Admin & Super Admin)
-         ============================================ --}}
+    {{-- PROFIL (semua role) --}}
+    <li>
+        <a href="{{ route('profile.index') }}"
+           class="menu-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+            <i class="bi bi-person-fill"></i> Profil Saya
+        </a>
+    </li>
+
+    {{-- ADMIN MENU --}}
     @if($user->isAdmin())
         <li class="menu-label mt-2">Admin</li>
-
         <li>
             <a href="{{ route('admin.verifikasi') }}"
                class="menu-item {{ request()->routeIs('admin.verifikasi') ? 'active' : '' }}">
@@ -105,7 +100,6 @@
                 @endif
             </a>
         </li>
-
         <li>
             <a href="{{ route('admin.komplain') }}"
                class="menu-item {{ request()->routeIs('admin.komplain') ? 'active' : '' }}">
@@ -118,7 +112,6 @@
                 @endif
             </a>
         </li>
-
         <li>
             <a href="{{ route('admin.users') }}"
                class="menu-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
@@ -127,9 +120,7 @@
         </li>
     @endif
 
-    {{-- ============================================
-         SUPER ADMIN MENU
-         ============================================ --}}
+    {{-- SUPER ADMIN MENU --}}
     @if($user->isSuperAdmin())
         <li class="menu-label mt-2">Super Admin</li>
         <li>

@@ -414,9 +414,12 @@
     <a href="{{ route('dashboard') }}" class="mobile-brand">
         <i class="bi bi-megaphone-fill"></i> LaporAja
     </a>
-    <div class="d-flex align-items-center gap-2">
+    
+    {{-- TOMBOL PROFIL DI MOBILE --}}
+    <a href="{{ route('profile.index') }}" class="d-flex align-items-center gap-2 text-decoration-none text-white">
         <span class="small opacity-75">{{ auth()->user()->name }}</span>
-    </div>
+        <i class="bi bi-person-circle fs-5"></i>
+    </a>
 </div>
 
 {{-- SIDEBAR (DESKTOP) --}}

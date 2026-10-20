@@ -25,7 +25,7 @@ class AuthController extends Controller
             'name'             => 'required|string|max:100',
             'email'            => 'required|email|unique:users,email',
             'password'         => 'required|min:6|confirmed',
-            'nis_nip'          => 'nullable|string|max:30',
+            'nisn_nip'         => 'nullable|string|max:30', // <-- Ubah ke nisn_nip
             'kelas'            => 'nullable|string|max:30',
             'no_telepon'       => 'nullable|string|max:20',
             'alasan_pengajuan' => 'nullable|string|max:500',
@@ -49,14 +49,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Cek dulu apakah user ada & password benar
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
         }
 
-        // Cek status akun
         if ($user->status_akun === 'pending') {
             return back()->withErrors([
                 'email' => 'Akun Anda masih menunggu konfirmasi Super Admin.',

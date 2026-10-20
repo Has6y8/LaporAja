@@ -32,8 +32,8 @@
 
     <div class="row g-2 mb-3">
         <div class="col-6">
-            <label class="form-label fw-semibold small">NIS / NIP</label>
-            <input type="text" name="nis_nip" value="{{ old('nis_nip') }}" class="form-control">
+            <label class="form-label fw-semibold small">NISN / NIP</label>
+            <input type="text" name="nisn_nip" value="{{ old('nisn_nip') }}" class="form-control">
         </div>
         <div class="col-6">
             <label class="form-label fw-semibold small">Kelas</label>

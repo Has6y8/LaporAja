@@ -49,7 +49,7 @@
                         <div class="fw-semibold small">{{ $u->name }}</div>
                         <div class="text-secondary" style="font-size:.78rem;">
                             {{ $u->email }}
-                            @if($u->nis_nip) • NIS/NIP: {{ $u->nis_nip }} @endif
+                            @if($u->nisn_nip) • NISN/NIP: {{ $u->nisn_nip }} @endif
                             @if($u->kelas) • {{ $u->kelas }} @endif
                         </div>
                     </div>
@@ -162,8 +162,8 @@
 
                     <div class="row g-2">
                         <div class="col-6">
-                            <label class="form-label small fw-semibold">NIS / NIP</label>
-                            <input type="text" name="nis_nip" class="form-control"
+                            <label class="form-label small fw-semibold">NISN / NIP</label>
+                            <input type="text" name="nisn_nip" class="form-control"
                                    placeholder="Opsional">
                         </div>
                         <div class="col-6">
