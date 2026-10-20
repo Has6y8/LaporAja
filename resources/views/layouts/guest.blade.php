@@ -81,6 +81,23 @@
         @media (max-width: 991px) {
             .brand-side { display: none; }
         }
+    
+        /* LaporAja guest pages: login and registration */
+        :root{--bs-primary:#087f5b;--bs-primary-rgb:8,127,91;--guest-ink:#173b2d}
+        body{background:#f2f7f4!important;color:var(--guest-ink)}
+        .brand-side{background:radial-gradient(circle at 90% 15%,#ffffff1b 0 9%,transparent 9.5%),linear-gradient(145deg,#0b8f68 0%,#07553f 72%,#063b2e 100%)!important}
+        .brand-side::before,.brand-side::after{background:#ffffff0b!important}
+        .brand-side .container-content{max-width:540px;margin-left:auto;margin-right:auto}
+        .brand-side h1,.brand-side h2{letter-spacing:-.05em;font-weight:800}
+        .brand-side .feature-item{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid #ffffff20;background:#ffffff0b;border-radius:14px;margin-top:10px}
+        .brand-side .feature-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#ffffff1a;color:#c9f7df;flex-shrink:0}
+        body:has(.brand-side) .col-lg-6:last-child>div{background:#fff;border:1px solid #e3ede6;border-radius:24px;padding:34px!important;box-shadow:0 24px 70px #123d2d10}
+        body:has(.brand-side) h2{font-size:1.9rem;letter-spacing:-.04em;color:#173b2d}
+        body:has(.brand-side) .form-control{border:1px solid #dce8e0;border-radius:11px;padding:.72rem .9rem;min-height:45px}
+        body:has(.brand-side) .form-control:focus{border-color:#4bb58b;box-shadow:0 0 0 .22rem #0b8f6819}
+        body:has(.brand-side) .btn-primary{--bs-btn-bg:#087f5b;--bs-btn-border-color:#087f5b;--bs-btn-hover-bg:#066749;--bs-btn-hover-border-color:#066749;border-radius:11px;box-shadow:0 8px 18px #087f5b25}
+        @media(max-width:991px){.brand-side{min-height:auto!important;padding:28px 22px!important}.brand-side .container-content:first-child{padding-top:10px!important}.brand-side .feature-item{display:none}.brand-side .container-content:last-child{margin-top:24px}.brand-side h1,.brand-side h2{font-size:1.65rem}body:has(.brand-side) .col-lg-6:last-child{min-height:auto!important;padding:20px!important}body:has(.brand-side) .col-lg-6:last-child>div{padding:25px!important}}
+        
     </style>
 </head>
 <body>

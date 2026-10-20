@@ -405,6 +405,71 @@
             border-top: 1px solid #e2e8f0; background: #f8fafc; flex-shrink: 0;
         }
     </style>
+    
+        /* LaporAja UI refresh — shared styling for every authenticated view */
+        :root{--brand:#087f5b;--brand-dark:#07553f;--brand-soft:#e8f7ef;--ink:#18352b;--muted:#74857d;--line:#e3ece6;--surface:#fff;--canvas:#f4f7f5}
+        body{background:var(--canvas)!important;color:var(--ink);font-size:14px;line-height:1.55}
+        .app-sidebar{background:linear-gradient(180deg,#0b4c3a 0%,#073a2d 100%)!important;box-shadow:10px 0 35px #123d2d0a}
+        .sidebar-brand{font-size:1.22rem!important;letter-spacing:-.04em;padding:23px 22px!important}
+        .sidebar-brand i{display:inline-grid;place-items:center;width:38px;height:38px;background:#ffffff1a;border:1px solid #ffffff24;border-radius:13px;margin-right:9px}
+        .sidebar-user{margin:10px 15px 22px!important;padding:14px!important;border:1px solid #ffffff1b;background:#ffffff0b!important;border-radius:16px!important}
+        .user-avatar{border-radius:13px!important;background:#d7f7e5!important;color:#07553f!important;font-weight:800!important}
+        .menu-label{color:#b6d4c6!important;font-size:.66rem!important;letter-spacing:.14em!important;text-transform:uppercase!important;padding-left:22px!important}
+        .menu-item{border-radius:11px!important;margin:3px 12px!important;padding:11px 13px!important;color:#d4e9df!important;transition:all .18s ease}
+        .menu-item i{width:23px;display:inline-block}
+        .menu-item:hover{background:#ffffff12!important;color:#fff!important;transform:translateX(2px)}
+        .menu-item.active{background:#d8f6e5!important;color:#07553f!important;font-weight:750!important;box-shadow:0 7px 18px #001b121c}
+        .sidebar-logout{border-top:1px solid #ffffff20!important}
+        .logout-btn{border-radius:11px!important;background:#ffffff0b!important}
+        .logout-btn:hover{background:#ffffff19!important}
+        .app-main{padding:34px clamp(18px,3vw,42px) 46px!important;max-width:1800px}
+        .app-main h4{font-size:1.55rem;letter-spacing:-.035em;color:#173d2e}
+        .app-main h5,.app-main h6{letter-spacing:-.02em;color:#203c30}
+        .app-main .text-secondary{color:#75867e!important}
+        .app-main .card{border:1px solid #e5ede8!important;border-radius:18px!important;box-shadow:0 8px 26px #173d2e07!important;overflow:hidden}
+        .app-main .card-body{padding:22px}
+        .app-main .card-header{background:#fff!important;border-bottom:1px solid #eaf0ec!important;padding:17px 22px!important}
+        .app-main .shadow-sm{box-shadow:0 8px 26px #173d2e07!important}
+        .app-main .btn{border-radius:11px;font-weight:650;transition:transform .16s ease,box-shadow .16s ease}
+        .app-main .btn:hover{transform:translateY(-1px)}
+        .app-main .btn-primary{--bs-btn-bg:#087f5b;--bs-btn-border-color:#087f5b;--bs-btn-hover-bg:#066749;--bs-btn-hover-border-color:#066749;--bs-btn-active-bg:#066749;--bs-btn-active-border-color:#066749;--bs-btn-focus-shadow-rgb:8,127,91;box-shadow:0 5px 13px #087f5b20}
+        .app-main .btn-light{--bs-btn-bg:#f3f7f4;--bs-btn-border-color:#e2ebe5;--bs-btn-hover-bg:#e8f1eb;--bs-btn-hover-border-color:#d7e5dc;color:#345347}
+        .app-main .btn-outline-primary{--bs-btn-color:#087f5b;--bs-btn-border-color:#a8d9c2;--bs-btn-hover-bg:#087f5b;--bs-btn-hover-border-color:#087f5b}
+        .app-main .form-control,.app-main .form-select{border:1px solid #dce7e0;border-radius:11px;padding:.72rem .9rem;background-color:#fff;color:#243f33;font-size:.9rem;min-height:44px}
+        .app-main textarea.form-control{min-height:100px}
+        .app-main .form-control:focus,.app-main .form-select:focus{border-color:#4bb58b;box-shadow:0 0 0 .22rem #0b8f6819}
+        .app-main .form-label{color:#345347;margin-bottom:.5rem}
+        .app-main .form-check{border-radius:13px!important}
+        .app-main .badge{font-weight:700;letter-spacing:.01em;padding:.45em .72em;border-radius:8px}
+        .app-main .alert{border:0;border-radius:13px;padding:14px 16px}
+        .app-main .modal-content{border:1px solid #e2ebe5;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px #0c332222}
+        .app-main .modal-header,.app-main .modal-footer{border-color:#eaf0ec;padding:18px 22px}
+        .app-main .modal-body{padding:22px}
+        .laporan-item{display:flex;align-items:center;gap:15px;padding:16px 20px;border-bottom:1px solid #edf2ee;text-decoration:none;color:inherit;transition:background .15s ease}
+        .laporan-item:last-child{border-bottom:0}.laporan-item:hover{background:#f6fbf7;color:inherit}
+        .laporan-thumb{width:62px;height:62px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;background:#eaf6ef;color:#4b8e70;overflow:hidden;font-size:1.25rem}
+        .status-badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;font-size:.73rem;font-weight:750;background:#edf4ef;color:#496455}
+        .status-badge.status-pending{background:#fff4d9;color:#95630b}.status-badge.status-diproses{background:#e4f1ff;color:#225d9b}.status-badge.status-selesai{background:#dcf8e7;color:#12683e}.status-badge.status-ditolak{background:#ffebeb;color:#a22d38}
+        .stat-card{background:linear-gradient(145deg,#fff,#fbfdfb)!important}
+        .stat-icon{width:47px!important;height:47px!important;border-radius:15px!important;display:grid;place-items:center;font-size:1.2rem}
+        .bottom-nav{border-top:1px solid #e3ece6!important;box-shadow:0 -8px 25px #153a2a0a!important}
+        .bottom-nav-item{font-weight:650!important}
+        .bottom-nav-item.active{color:#087f5b!important}
+        .mobile-header{background:#07553f!important;box-shadow:0 8px 22px #123d2d1a}
+        .mobile-brand{font-weight:800!important;letter-spacing:-.03em}
+        .dynamic-form{transition:opacity .2s}
+        .zoomable{cursor:zoom-in}
+        @media(min-width:992px){.app-main{padding-top:38px!important}}
+        @media(max-width:767px){
+          .app-main{padding:22px 14px calc(var(--bottom-nav-h) + 26px)!important}
+          .app-main h4{font-size:1.35rem}
+          .app-main .card-body{padding:17px}
+          .laporan-item{align-items:flex-start;padding:14px}
+          .laporan-thumb{width:54px;height:54px}
+          .app-main .d-flex.justify-content-between{row-gap:12px}
+          .app-main .btn{max-width:100%}
+        }
+        
     @stack('styles')
 </head>
 <body>
