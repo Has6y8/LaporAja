@@ -10,16 +10,17 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role',
-        'nisn_nip', 'kelas', 'no_telepon', 'is_approved', // <-- Ubah ke nisn_nip
+        'name', 'email', 'password', 'role', 'tipe_user', 'can_manage_users',
+        'nisn_nip', 'kelas', 'jabatan', 'no_telepon', 'is_approved',
         'alasan_pengajuan', 'status_akun', 'catatan_penolakan',
     ];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'password'    => 'hashed',
-        'is_approved' => 'boolean',
+        'password'         => 'hashed',
+        'is_approved'      => 'boolean',
+        'can_manage_users' => 'boolean', // <-- Tambahkan ini
     ];
 
     public function laporans()
@@ -39,11 +40,14 @@ class User extends Authenticatable
 
     public function roleLabel(): string
     {
+        if ($this->role === 'user') {
+            return $this->tipe_user === 'guru' ? 'Guru' : 'Siswa';
+        }
         return match ($this->role) {
             'super_admin' => 'Super Admin',
             'admin'       => 'Admin',
             'staff'       => 'Staff',
-            default       => 'Siswa / Guru',
+            default       => 'User',
         };
     }
 }

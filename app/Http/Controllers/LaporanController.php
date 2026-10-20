@@ -26,9 +26,9 @@ class LaporanController extends Controller
             $data['foto_bukti'] = $request->file('foto_bukti')->store('uploads', 'public');
         }
 
-        $data['user_id']           = auth()->id();
-        $data['status']            = 'pending';
-        $data['moderation_status'] = 'pending';
+        $data['user_id'] = auth()->id();
+        $data['status']  = 'pending';
+        // $data['moderation_status'] = 'pending'; <-- DIHAPUS
 
         $laporan = Laporan::create($data);
 
@@ -36,11 +36,11 @@ class LaporanController extends Controller
             'laporan_id' => $laporan->id,
             'user_id'    => auth()->id(),
             'status'     => 'pending',
-            'keterangan' => 'Laporan baru dibuat, menunggu verifikasi admin.',
+            'keterangan' => 'Laporan baru dibuat.',
         ]);
 
         return redirect()->route('dashboard')
-            ->with('success', 'Laporan berhasil dikirim! Menunggu verifikasi admin.');
+            ->with('success', 'Laporan berhasil dikirim!');
     }
 
     public function show(Laporan $laporan)

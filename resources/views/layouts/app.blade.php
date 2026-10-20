@@ -497,30 +497,26 @@
                 <span>Tugas</span>
             </a>
         @else
-            @php $pendingVerif = \App\Models\Laporan::where('moderation_status','pending')->count(); @endphp
-            <a href="{{ route('admin.verifikasi') }}"
-               class="bottom-nav-item {{ request()->routeIs('admin.verifikasi') ? 'active' : '' }}">
-                <i class="bi bi-shield-check"></i>
-                <span>Verifikasi</span>
-                @if($pendingVerif > 0)
-                    <span class="nav-badge">{{ $pendingVerif }}</span>
-                @endif
-            </a>
-            @php $pendingKomplain = \App\Models\Komplain::where('status','pending')->count(); @endphp
+            {{-- Menu Admin Mobile --}}
             <a href="{{ route('admin.komplain') }}"
                class="bottom-nav-item {{ request()->routeIs('admin.komplain') ? 'active' : '' }}">
                 <i class="bi bi-chat-square-text-fill"></i>
                 <span>Komplain</span>
-                @if($pendingKomplain > 0)
-                    <span class="nav-badge">{{ $pendingKomplain }}</span>
-                @endif
             </a>
+            
+            @if($user->isSuperAdmin() || $user->can_manage_users)
+                <a href="{{ route('admin.users') }}"
+                   class="bottom-nav-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Users</span>
+                </a>
+            @endif
         @endif
 
-        <a href="{{ route('histori') }}"
-           class="bottom-nav-item {{ request()->routeIs('histori') ? 'active' : '' }}">
-            <i class="bi bi-clock-history"></i>
-            <span>Histori</span>
+        <a href="{{ route('profile.index') }}"
+           class="bottom-nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+            <i class="bi bi-person-fill"></i>
+            <span>Profil</span>
         </a>
     </div>
 </nav>

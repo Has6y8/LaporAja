@@ -35,9 +35,7 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="stat-icon" style="background:#f1f5f9;color:#475569;">
-                        <i class="bi bi-collection-fill"></i>
-                    </div>
+                    <div class="stat-icon" style="background:#f1f5f9;color:#475569;"><i class="bi bi-collection-fill"></i></div>
                     <div>
                         <div class="fs-4 fw-bold lh-1">{{ $stats['total'] }}</div>
                         <div class="small text-secondary mt-1">Total Laporan</div>
@@ -48,9 +46,7 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="stat-icon" style="background:#fffbeb;color:#d97706;">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
+                    <div class="stat-icon" style="background:#fffbeb;color:#d97706;"><i class="bi bi-hourglass-split"></i></div>
                     <div>
                         <div class="fs-4 fw-bold lh-1">{{ $stats['pending'] }}</div>
                         <div class="small text-secondary mt-1">Pending</div>
@@ -61,9 +57,7 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="stat-icon" style="background:#eff6ff;color:#2563eb;">
-                        <i class="bi bi-tools"></i>
-                    </div>
+                    <div class="stat-icon" style="background:#eff6ff;color:#2563eb;"><i class="bi bi-tools"></i></div>
                     <div>
                         <div class="fs-4 fw-bold lh-1">{{ $stats['diproses'] }}</div>
                         <div class="small text-secondary mt-1">Diproses</div>
@@ -74,9 +68,7 @@
         <div class="col-6 col-md-3">
             <div class="card stat-card border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="stat-icon" style="background:#ecfdf5;color:#059669;">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
+                    <div class="stat-icon" style="background:#ecfdf5;color:#059669;"><i class="bi bi-check-circle-fill"></i></div>
                     <div>
                         <div class="fs-4 fw-bold lh-1">{{ $stats['selesai'] }}</div>
                         <div class="small text-secondary mt-1">Selesai</div>
@@ -103,16 +95,13 @@
             <a href="{{ route('laporan.show', $l) }}" class="laporan-item">
                 <div class="laporan-thumb">
                     @if($l->foto_bukti)
-                        <img src="{{ asset('storage/' . $l->foto_bukti) }}"
-                             style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+                        <img src="{{ asset('storage/' . $l->foto_bukti) }}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
                     @else
                         <i class="bi bi-image"></i>
                     @endif
                 </div>
                 <div class="flex-grow-1 min-width-0">
-                    <div class="fw-semibold text-truncate mb-1" style="font-size:.95rem;">
-                        {{ $l->judul }}
-                    </div>
+                    <div class="fw-semibold text-truncate mb-1" style="font-size:.95rem;">{{ $l->judul }}</div>
                     <div class="small text-secondary d-flex flex-wrap gap-3 mb-1">
                         <span><i class="bi bi-geo-alt me-1"></i>{{ $l->lokasi }}</span>
                         @if(!$user->isUser())
@@ -121,11 +110,6 @@
                     </div>
                     <div class="d-flex gap-1 flex-wrap">
                         <span class="status-badge status-{{ $l->status }}">{{ $l->status_badge['label'] }}</span>
-                        @if($l->moderation_status !== 'approved')
-                            <span class="status-badge status-{{ $l->moderation_status === 'pending' ? 'pending' : 'rejected' }}">
-                                {{ $l->moderation_badge['label'] }}
-                            </span>
-                        @endif
                     </div>
                 </div>
                 <i class="bi bi-chevron-right text-secondary flex-shrink-0"></i>

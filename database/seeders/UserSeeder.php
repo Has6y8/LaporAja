@@ -11,21 +11,23 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name'         => 'Super Admin',
-            'email'        => 'super@laporaja.id',
-            'password'     => Hash::make('super123'),
-            'role'         => 'super_admin',
-            'is_approved'  => true,
-            'status_akun'  => 'approved',
+            'name'             => 'Super Admin',
+            'email'            => 'super@laporaja.id',
+            'password'         => Hash::make('super123'),
+            'role'             => 'super_admin',
+            'is_approved'      => true,
+            'status_akun'      => 'approved',
+            'can_manage_users' => true, // <-- Super admin punya akses
         ]);
 
         User::create([
-            'name'         => 'Admin Sekolah',
-            'email'        => 'admin@laporaja.id',
-            'password'     => Hash::make('admin123'),
-            'role'         => 'admin',
-            'is_approved'  => true,
-            'status_akun'  => 'approved',
+            'name'             => 'Admin Sekolah',
+            'email'            => 'admin@laporaja.id',
+            'password'         => Hash::make('admin123'),
+            'role'             => 'admin',
+            'is_approved'      => true,
+            'status_akun'      => 'approved',
+            'can_manage_users' => false, // <-- Admin biasa TIDAK punya akses
         ]);
 
         User::create([
@@ -42,7 +44,8 @@ class UserSeeder extends Seeder
             'email'        => 'user@laporaja.id',
             'password'     => Hash::make('user123'),
             'role'         => 'user',
-            'nisn_nip'     => '27', // <-- Ubah ke nisn_nip
+            'tipe_user'    => 'siswa',
+            'nisn_nip'     => '27',
             'kelas'        => 'XII RPL C',
             'no_telepon'   => '08123456789',
             'is_approved'  => true,

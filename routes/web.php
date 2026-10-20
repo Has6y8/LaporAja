@@ -8,7 +8,7 @@ use App\Http\Controllers\{
     StaffController,
     SuperAdminController,
     KomplainController,
-    ProfileController, // <-- Tambahan Profile
+    ProfileController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -56,14 +56,18 @@ Route::middleware('auth')->group(function () {
 
     // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
-        Route::get('/admin/verifikasi', [AdminController::class, 'verifikasiIndex'])->name('admin.verifikasi');
-        Route::put('/admin/verifikasi/{laporan}', [AdminController::class, 'verifikasi'])->name('admin.verifikasi.proses');
         Route::put('/admin/laporan/{laporan}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
-        Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
-        Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
-        Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
+
+        // Kelola user (Dibatasi middleware can_manage_users)
+        Route::middleware('can_manage_users')->group(function () {
+            Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
+            Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
+            Route::put('/admin/users/{user}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
+            Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
+            Route::put('/admin/users/{user}/toggle-manage', [AdminController::class, 'toggleManageUsers'])->name('admin.users.toggle_manage');
+        });
     });
 
     // ===== SUPER ADMIN =====

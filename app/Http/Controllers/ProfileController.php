@@ -18,10 +18,9 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $data = $request->validate([
-            'name'       => 'required|string|max:100',
             'email'      => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'nisn_nip'   => 'nullable|string|max:30',
             'kelas'      => 'nullable|string|max:30',
+            'jabatan'    => 'nullable|string|max:50',
             'no_telepon' => 'nullable|string|max:20',
         ]);
 

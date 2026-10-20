@@ -15,6 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'can_manage_users' => \App\Http\Middleware\CanManageUsers::class, // <-- Tambahkan ini
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+    

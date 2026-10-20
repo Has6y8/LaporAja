@@ -9,49 +9,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    public function verifikasiIndex()
-    {
-        $laporans = Laporan::where('moderation_status', 'pending')
-            ->where('status', 'pending')
-            ->latest()->get();
-        return view('admin.verifikasi', compact('laporans'));
-    }
-
-    public function verifikasi(Request $request, Laporan $laporan)
-    {
-        if ($laporan->status !== 'pending') {
-            return back()->with('error', 'Laporan sudah diproses staff. Verifikasi tidak bisa dilakukan lagi.');
-        }
-        $data = $request->validate([
-            'moderation_status' => 'required|in:approved,rejected',
-            'alasan_moderasi'   => 'nullable|string|max:500',
-        ]);
-        if ($data['moderation_status'] === 'rejected' && empty($data['alasan_moderasi'])) {
-            return back()->with('error', 'Alasan penolakan wajib diisi.');
-        }
-        $laporan->update([
-            'moderation_status' => $data['moderation_status'],
-            'alasan_moderasi'   => $data['alasan_moderasi'] ?? null,
-            'verified_by'       => auth()->id(),
-            'verified_at'       => now(),
-        ]);
-        if ($data['moderation_status'] === 'rejected') {
-            $laporan->update(['status' => 'ditolak']);
-        }
-        StatusLaporan::create([
-            'laporan_id' => $laporan->id,
-            'user_id'    => auth()->id(),
-            'status'     => $laporan->status,
-            'keterangan' => $data['moderation_status'] === 'approved'
-                ? 'Laporan diverifikasi oleh admin.'
-                : 'Laporan ditolak admin: ' . $data['alasan_moderasi'],
-        ]);
-        return back()->with('success', 'Verifikasi laporan berhasil.');
-    }
-
     public function updateStatus(Request $request, Laporan $laporan)
     {
         $rules = [
@@ -98,8 +59,6 @@ class AdminController extends Controller
         $data = $request->validate([
             'respon_admin' => 'required|string|max:1000',
             'aksi'         => 'required|in:respon_saja,tolak_laporan,hapus_laporan',
-        ], [
-            'aksi.required' => 'Pilih aksi terlebih dahulu.',
         ]);
 
         $komplain->update([
@@ -111,11 +70,8 @@ class AdminController extends Controller
 
         if ($data['aksi'] === 'tolak_laporan') {
             $komplain->laporan->update([
-                'status'            => 'ditolak',
-                'moderation_status' => 'rejected',
-                'alasan_moderasi'   => 'Ditolak atas permintaan staff: ' . $data['respon_admin'],
-                'verified_by'       => auth()->id(),
-                'verified_at'       => now(),
+                'status'        => 'ditolak',
+                'catatan_staff' => 'Ditolak atas permintaan staff: ' . $data['respon_admin'],
             ]);
             StatusLaporan::create([
                 'laporan_id' => $komplain->laporan_id,
@@ -157,24 +113,96 @@ class AdminController extends Controller
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
             'role'       => 'required|in:user,staff,admin',
-            'nisn_nip'   => 'nullable|string', // <-- Ubah ke nisn_nip
+            'tipe_user'  => 'nullable|in:siswa,guru',
+            'nisn_nip'   => 'nullable|string',
             'kelas'      => 'nullable|string',
+            'jabatan'    => 'nullable|string',
             'no_telepon' => 'nullable|string',
         ]);
 
         $data['password'] = Hash::make($data['password']);
 
-        if ($data['role'] === 'admin') {
+        if ($data['role'] === 'user') {
+            $data['status_akun'] = 'approved';
+            $data['is_approved'] = true;
+        } elseif ($data['role'] === 'staff') {
+            $data['status_akun'] = 'approved';
+            $data['is_approved'] = true;
+            $data['tipe_user'] = null;
+            $data['kelas']     = null;
+        } else {
             $data['status_akun'] = 'pending';
             $data['is_approved'] = false;
-            User::create($data);
-            return back()->with('success', "Admin {$data['name']} berhasil diajukan. Menunggu approval Super Admin.");
+            $data['tipe_user'] = null;
+            $data['kelas']     = null;
         }
 
-        $data['status_akun'] = 'approved';
-        $data['is_approved'] = true;
         User::create($data);
-        return back()->with('success', "User {$data['name']} berhasil ditambahkan.");
+        
+        $msg = $data['role'] === 'admin' ? "Admin {$data['name']} diajukan. Menunggu approval." : "User {$data['name']} berhasil ditambahkan.";
+        return back()->with('success', $msg);
+    }
+
+    public function userUpdate(Request $request, User $user)
+    {
+        // Super Admin tidak bisa diedit oleh Admin biasa
+        if ($user->role === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+            return back()->with('error', 'Hanya Super Admin yang bisa mengedit Super Admin.');
+        }
+
+        $data = $request->validate([
+            'name'        => 'required|string|max:100',
+            'email'       => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'role'        => 'required|in:user,staff,admin',
+            'tipe_user'   => 'nullable|in:siswa,guru',
+            'nisn_nip'    => 'nullable|string',
+            'kelas'       => 'nullable|string',
+            'jabatan'     => 'nullable|string',
+            'no_telepon'  => 'nullable|string',
+            'status_akun' => 'required|in:pending,approved,rejected',
+        ]);
+
+        if ($data['role'] === 'user') {
+            $data['is_approved'] = $data['status_akun'] === 'approved';
+        } elseif ($data['role'] === 'staff') {
+            $data['status_akun'] = 'approved';
+            $data['is_approved'] = true;
+            $data['tipe_user'] = null;
+            $data['kelas']     = null;
+        } else {
+            $data['is_approved'] = $data['status_akun'] === 'approved';
+            $data['tipe_user'] = null;
+            $data['kelas']     = null;
+        }
+        
+        $user->update($data);
+
+        return back()->with('success', "Data user {$user->name} berhasil diperbarui.");
+    }
+
+    public function toggleManageUsers(User $user)
+    {
+        // Hanya Super Admin yang bisa mengakses ini
+        if (!auth()->user()->isSuperAdmin()) {
+            return back()->with('error', 'Hanya Super Admin yang bisa memberikan izin ini.');
+        }
+
+        // Jangan sampai menurunkan derajat Super Admin
+        if ($user->role === 'super_admin') {
+            return back()->with('error', 'Tidak bisa mengubah izin Super Admin.');
+        }
+
+        // Hanya bisa diberikan ke Admin
+        if ($user->role !== 'admin') {
+            return back()->with('error', 'Izin ini hanya bisa diberikan ke Admin.');
+        }
+
+        $user->update([
+            'can_manage_users' => !$user->can_manage_users
+        ]);
+
+        $status = $user->can_manage_users ? 'diberikan' : 'dicabut';
+        return back()->with('success', "Izin kelola user berhasil {$status} untuk {$user->name}.");
     }
 
     public function userDestroy(User $user)
