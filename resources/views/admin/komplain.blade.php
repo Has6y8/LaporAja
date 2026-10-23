@@ -19,8 +19,8 @@
             <div class="d-flex justify-content-between align-items-start gap-2 mb-2 flex-wrap">
                 <div class="d-flex gap-2 flex-wrap">
                     <span class="badge text-bg-light">{{ $k->tipe_label }}</span>
-                    <span class="badge text-bg-{{ $k->status === 'direspon' ? 'success' : 'warning' }}">
-                        {{ $k->status === 'direspon' ? 'Direspon' : 'Pending' }}
+                    <span class="badge text-bg-{{ $k->status === 'direspon' ? 'success' : ($k->status === 'ditolak' ? 'danger' : 'warning') }}">
+                        {{ $k->status === 'direspon' ? 'Direspon' : ($k->status === 'ditolak' ? 'Ditolak' : 'Pending') }}
                     </span>
                     @if($k->tipe === 'minta_hapus_laporan')
                         <span class="badge text-bg-danger">
@@ -52,15 +52,17 @@
             {{-- ISI KOMPLAIN --}}
             <p class="small text-secondary mb-3">{{ $k->isi }}</p>
 
-            {{-- SUDAH DIRESPON --}}
-            @if($k->status === 'direspon')
-                <div class="p-3 rounded-3" style="background:#ecfdf5;border-left:3px solid #059669;">
-                    <div class="small fw-bold mb-1" style="color:#065f46;">
-                        <i class="bi bi-reply-fill me-1"></i> Respon Anda
+            {{-- SUDAH DIRESPON / DITOLAK --}}
+            @if(in_array($k->status, ['direspon', 'ditolak']))
+                @php $isDitolak = $k->status === 'ditolak'; @endphp
+                <div class="p-3 rounded-3" style="background:{{ $isDitolak ? '#fef2f2' : '#ecfdf5' }};border-left:3px solid {{ $isDitolak ? '#dc2626' : '#059669' }};">
+                    <div class="small fw-bold mb-1" style="color:{{ $isDitolak ? '#991b1b' : '#065f46' }};">
+                        <i class="bi bi-{{ $isDitolak ? 'x-circle-fill' : 'reply-fill' }} me-1"></i>
+                        {{ $isDitolak ? 'Komplain Ditolak' : 'Respon Anda' }}
                     </div>
-                    <div class="small" style="color:#065f46;">{{ $k->respon_admin }}</div>
+                    <div class="small" style="color:{{ $isDitolak ? '#991b1b' : '#065f46' }};">{{ $k->respon_admin }}</div>
                     @if($k->respon_at)
-                        <div class="small mt-1" style="color:#065f46;opacity:.7;font-size:.72rem;">
+                        <div class="small mt-1" style="color:{{ $isDitolak ? '#991b1b' : '#065f46' }};opacity:.7;font-size:.72rem;">
                             {{ $k->respon_at->format('d M Y H:i') }}
                         </div>
                     @endif
@@ -91,14 +93,14 @@
                                 </label>
                             </div>
 
-                            {{-- Opsi 2: Tolak Laporan --}}
+                            {{-- Opsi 2: Tolak Komplain --}}
                             @if($k->laporan && $k->laporan->status !== 'ditolak')
                                 <div class="form-check p-3 rounded-3 border" style="background:#fffbeb;">
                                     <input class="form-check-input" type="radio" name="aksi"
                                            value="tolak_laporan" id="aksi_tolak_{{ $k->id }}">
                                     <label class="form-check-label small" for="aksi_tolak_{{ $k->id }}">
-                                        <strong>🚫 Tolak Laporan</strong> — Set status jadi "Ditolak".
-                                        Laporan masih tersimpan di histori user.
+                                        <strong>🚫 Tolak Komplain</strong> — Komplain ditandai sebagai "Ditolak".
+                                        Status laporan <strong>tidak berubah</strong>.
                                     </label>
                                 </div>
                             @endif

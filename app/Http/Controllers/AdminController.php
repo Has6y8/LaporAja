@@ -61,25 +61,20 @@ class AdminController extends Controller
             'aksi'         => 'required|in:respon_saja,tolak_laporan,hapus_laporan',
         ]);
 
+        // FIX: 'tolak_laporan' -> status komplain = 'ditolak'
+        //      selain itu -> status komplain = 'direspon'
+        $statusKomplain = $data['aksi'] === 'tolak_laporan' ? 'ditolak' : 'direspon';
+
         $komplain->update([
             'respon_admin' => $data['respon_admin'],
             'admin_id'     => auth()->id(),
             'respon_at'    => now(),
-            'status'       => 'direspon',
+            'status'       => $statusKomplain,
         ]);
 
         if ($data['aksi'] === 'tolak_laporan') {
-            $komplain->laporan->update([
-                'status'        => 'ditolak',
-                'catatan_staff' => 'Ditolak atas permintaan staff: ' . $data['respon_admin'],
-            ]);
-            StatusLaporan::create([
-                'laporan_id' => $komplain->laporan_id,
-                'user_id'    => auth()->id(),
-                'status'     => 'ditolak',
-                'keterangan' => 'Laporan ditolak atas permintaan staff.',
-            ]);
-            return back()->with('success', 'Laporan ditolak. Tetap tersimpan di histori.');
+            // FIX: HANYA menolak komplain. Status laporan TIDAK diubah.
+            return back()->with('success', 'Komplain berhasil ditolak. Status laporan tidak berubah.');
 
         } elseif ($data['aksi'] === 'hapus_laporan') {
             $laporan = $komplain->laporan;
