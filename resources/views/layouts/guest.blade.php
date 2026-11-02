@@ -3,146 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
     <title>@yield('title') — LaporAja</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bs-primary: #059669;
-            --bs-primary-rgb: 5, 150, 105;
+            --c-primary: #059669;
+            --c-primary-dark: #047857;
+            --c-primary-light: #10b981;
+            --c-deep: #064e3b;
+            --c-soft: #ecfdf5;
+            --c-ink: #0f172a;
+            --c-ink-2: #334155;
+            --c-muted: #64748b;
+            --c-border: #e2e8f0;
+            --c-bg: #f8fafc;
+            --r-sm: 10px;
+            --r-md: 14px;
+            --r-lg: 20px;
+            --tr: 180ms cubic-bezier(.4,0,.2,1);
         }
-        * { font-family: 'Inter', system-ui, sans-serif; }
-        body { min-height: 100vh; background: #f1f5f9; }
+        * { font-family: 'Inter', -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { min-height: 100vh; background: var(--c-bg); color: var(--c-ink); font-size: .9375rem; -webkit-font-smoothing: antialiased; }
 
         .btn-primary {
-            --bs-btn-bg: #059669;
-            --bs-btn-border-color: #059669;
-            --bs-btn-hover-bg: #047857;
-            --bs-btn-hover-border-color: #047857;
-            --bs-btn-active-bg: #047857;
-            --bs-btn-active-border-color: #047857;
-            --bs-btn-focus-shadow-rgb: 5, 150, 105;
+            --bs-btn-bg: var(--c-primary);
+            --bs-btn-border-color: var(--c-primary);
+            --bs-btn-hover-bg: var(--c-primary-dark);
+            --bs-btn-hover-border-color: var(--c-primary-dark);
+            --bs-btn-active-bg: var(--c-primary-dark);
+            --bs-btn-active-border-color: var(--c-primary-dark);
+            border-radius: var(--r-sm);
+            font-weight: 600;
+            min-height: 44px;
+            transition: all var(--tr);
+            box-shadow: 0 4px 12px rgba(5,150,105,.2);
         }
+        .btn-primary:hover { box-shadow: 0 6px 18px rgba(5,150,105,.28); }
 
+        .form-control, .form-select {
+            border-radius: var(--r-sm);
+            border: 1px solid var(--c-border);
+            padding: .65rem .9rem;
+            font-size: .9375rem;
+            min-height: 44px;
+            transition: all var(--tr);
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--c-primary-light);
+            box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+        }
+        .form-label { font-size: .8125rem; font-weight: 600; color: var(--c-ink-2); margin-bottom: .4rem; }
+
+        /* ===== BRAND SIDE ===== */
         .brand-side {
-            background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+            background:
+                radial-gradient(circle at 85% 15%, rgba(255,255,255,.08) 0 30%, transparent 31%),
+                radial-gradient(circle at 15% 85%, rgba(16,185,129,.35) 0 40%, transparent 41%),
+                linear-gradient(150deg, #059669 0%, #064e3b 60%, #033b2b 100%);
             color: #fff;
             min-height: 100vh;
             position: relative;
             overflow: hidden;
         }
-        .brand-side::before,
-        .brand-side::after {
-            content: '';
-            position: absolute;
-            background: rgba(255,255,255,.06);
-            border-radius: 50%;
+        .brand-inner {
+            position: relative;
+            z-index: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: space-between;
+            max-width: 560px;
         }
-        .brand-side::before { width: 480px; height: 480px; top: -180px; right: -180px; }
-        .brand-side::after { width: 320px; height: 320px; bottom: -140px; left: -140px; }
-
-        .brand-side .container-content { position: relative; z-index: 1; }
-
-        .logo-badge {
-            width: 46px; height: 46px;
-            background: rgba(255,255,255,.15);
-            border-radius: 12px;
-            display: inline-flex;
+        .brand-logo {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
+            gap: .75rem;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -.02em;
+            margin-bottom: 3rem;
+        }
+        .brand-logo .logo-mark {
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,.16);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
             backdrop-filter: blur(8px);
         }
-
+        .brand-side h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -.04em;
+            margin-bottom: 1rem;
+        }
+        .brand-side .lead {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255,255,255,.8);
+            margin-bottom: 2rem;
+            max-width: 420px;
+        }
+        .feature-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1rem; }
         .feature-item {
             display: flex;
             align-items: center;
             gap: .85rem;
-            margin-bottom: .85rem;
+            padding: .85rem 1rem;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: var(--r-md);
+            font-size: .875rem;
+            font-weight: 500;
         }
-        .feature-icon {
+        .feature-item .feature-icon {
             width: 36px; height: 36px;
-            background: rgba(255,255,255,.15);
-            border-radius: 9px;
+            background: rgba(16,185,129,.25);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            color: #a7f3d0;
+        }
+        .brand-footer { font-size: .8rem; color: rgba(255,255,255,.6); }
+
+        /* ===== FORM SIDE ===== */
+        .form-side {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+        .form-card {
+            width: 100%;
+            max-width: 440px;
+        }
+        .form-card h2 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            margin-bottom: .35rem;
+            color: var(--c-ink);
+        }
+        .form-card .sub {
+            color: var(--c-muted);
+            font-size: .875rem;
+            margin-bottom: 1.75rem;
         }
 
-        .form-control:focus {
-            border-color: #059669;
-            box-shadow: 0 0 0 .2rem rgba(5,150,105,.15);
+        .alert-soft {
+            padding: .85rem 1rem;
+            border-radius: var(--r-sm);
+            font-size: .8125rem;
+            display: flex;
+            align-items: flex-start;
+            gap: .55rem;
+            margin-bottom: 1.25rem;
         }
+        .alert-soft.alert-success { background: var(--c-soft); color: #065f46; border-left: 3px solid var(--c-primary); }
+        .alert-soft.alert-danger  { background: #fef2f2; color: #991b1b; border-left: 3px solid #dc2626; }
+        .alert-soft.alert-info    { background: #eff6ff; color: #1e40af; border-left: 3px solid #2563eb; }
+
+        .demo-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: var(--r-md);
+            background: var(--c-soft);
+            border: 1px solid #d1fae5;
+        }
+        .demo-box .title {
+            font-weight: 700;
+            font-size: .75rem;
+            color: var(--c-primary);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: .6rem;
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+        .demo-box .row-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .5rem .9rem;
+            font-size: .72rem;
+            color: var(--c-ink-2);
+        }
+        .demo-box .row-demo b { color: var(--c-ink); }
+
+        .link-primary {
+            color: var(--c-primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .link-primary:hover { color: var(--c-primary-dark); text-decoration: underline; }
 
         @media (max-width: 991px) {
             .brand-side { display: none; }
+            .form-side { padding: 1.5rem 1.25rem; min-height: auto; align-items: flex-start; padding-top: 2.5rem; padding-bottom: 2.5rem; }
+            .form-card { max-width: 100%; }
+            .form-card h2 { font-size: 1.5rem; }
         }
-    
-        /* LaporAja guest pages: login and registration */
-        :root{--bs-primary:#087f5b;--bs-primary-rgb:8,127,91;--guest-ink:#173b2d}
-        body{background:#f2f7f4!important;color:var(--guest-ink)}
-        .brand-side{background:radial-gradient(circle at 90% 15%,#ffffff1b 0 9%,transparent 9.5%),linear-gradient(145deg,#0b8f68 0%,#07553f 72%,#063b2e 100%)!important}
-        .brand-side::before,.brand-side::after{background:#ffffff0b!important}
-        .brand-side .container-content{max-width:540px;margin-left:auto;margin-right:auto}
-        .brand-side h1,.brand-side h2{letter-spacing:-.05em;font-weight:800}
-        .brand-side .feature-item{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid #ffffff20;background:#ffffff0b;border-radius:14px;margin-top:10px}
-        .brand-side .feature-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#ffffff1a;color:#c9f7df;flex-shrink:0}
-        body:has(.brand-side) .col-lg-6:last-child>div{background:#fff;border:1px solid #e3ede6;border-radius:24px;padding:34px!important;box-shadow:0 24px 70px #123d2d10}
-        body:has(.brand-side) h2{font-size:1.9rem;letter-spacing:-.04em;color:#173b2d}
-        body:has(.brand-side) .form-control{border:1px solid #dce8e0;border-radius:11px;padding:.72rem .9rem;min-height:45px}
-        body:has(.brand-side) .form-control:focus{border-color:#4bb58b;box-shadow:0 0 0 .22rem #0b8f6819}
-        body:has(.brand-side) .btn-primary{--bs-btn-bg:#087f5b;--bs-btn-border-color:#087f5b;--bs-btn-hover-bg:#066749;--bs-btn-hover-border-color:#066749;border-radius:11px;box-shadow:0 8px 18px #087f5b25}
-        @media(max-width:991px){.brand-side{min-height:auto!important;padding:28px 22px!important}.brand-side .container-content:first-child{padding-top:10px!important}.brand-side .feature-item{display:none}.brand-side .container-content:last-child{margin-top:24px}.brand-side h1,.brand-side h2{font-size:1.65rem}body:has(.brand-side) .col-lg-6:last-child{min-height:auto!important;padding:20px!important}body:has(.brand-side) .col-lg-6:last-child>div{padding:25px!important}}
-        
+
+        .mobile-brand-top {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            font-weight: 800;
+            color: var(--c-deep);
+            font-size: 1.1rem;
+            margin-bottom: 1.75rem;
+            letter-spacing: -.02em;
+        }
+        .mobile-brand-top .logo-mark {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 18px rgba(16,185,129,.3);
+        }
+        @media (max-width: 991px) { .mobile-brand-top { display: flex; } }
     </style>
 </head>
 <body>
-
-<div class="container-fluid">
+<div class="container-fluid p-0">
     <div class="row g-0">
         {{-- BRAND SIDE --}}
-        <div class="col-lg-6 brand-side p-4 p-lg-5 d-flex flex-column justify-content-between">
-            <div class="container-content">
-                <div class="d-flex align-items-center gap-3 mb-5">
-                    <div class="logo-badge"><i class="bi bi-megaphone-fill"></i></div>
-                    <span class="fs-4 fw-bold">LaporAja</span>
-                </div>
-
-                <h1 class="display-5 fw-bold lh-sm mb-3">
-                    Laporkan Kerusakan<br>Sekolah dengan Mudah
-                </h1>
-                <p class="fs-6 opacity-75 mb-4" style="max-width:400px;">
-                    Sistem pengaduan sarana & prasarana SMK Negeri 5 Surakarta.
-                </p>
-
-                <div class="mt-4">
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="bi bi-camera-fill"></i></div>
-                        <span>Upload foto bukti kerusakan</span>
+        <div class="col-lg-6 brand-side">
+            <div class="brand-inner">
+                <div>
+                    <div class="brand-logo">
+                        <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
+                        LaporAja
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                        <span>Tracking status perbaikan real-time</span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
-                        <span>Riwayat laporan tersimpan rapi</span>
+
+                    <h1>Laporkan Kerusakan<br>Sekolah dengan Mudah</h1>
+                    <p class="lead">Sistem pengaduan sarana & prasarana SMK Negeri 5 Surakarta.</p>
+
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="feature-icon"><i class="bi bi-camera-fill"></i></span>
+                            <span>Upload foto bukti kerusakan</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon"><i class="bi bi-graph-up-arrow"></i></span>
+                            <span>Tracking status perbaikan real-time</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon"><i class="bi bi-shield-check"></i></span>
+                            <span>Riwayat laporan tersimpan rapi</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="container-content">
-                <small class="opacity-75">© {{ date('Y') }} LaporAja — XII RPL C</small>
+                <div class="brand-footer">© {{ date('Y') }} LaporAja — XII RPL C</div>
             </div>
         </div>
 
         {{-- FORM SIDE --}}
-        <div class="col-lg-6 d-flex align-items-center justify-content-center p-4" style="min-height:100vh;">
-            <div style="width:100%;max-width:420px;">
+        <div class="col-lg-6 form-side">
+            <div class="form-card">
+                <div class="mobile-brand-top">
+                    <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
+                    LaporAja
+                </div>
                 @yield('content')
             </div>
         </div>

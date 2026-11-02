@@ -11,7 +11,7 @@
 @endphp
 
 <div class="mb-3">
-    <label class="form-label fw-semibold small">
+    <label class="form-label">
         {{ $label }} @if($required)<span class="text-danger">*</span>@endif
     </label>
 
@@ -23,7 +23,7 @@
     </div>
 
     <div class="d-flex gap-2 flex-wrap">
-        <button type="button" class="btn btn-outline-secondary btn-sm"
+        <button type="button" class="btn btn-light btn-sm"
                 onclick="document.getElementById('{{ $inputId }}').click()">
             <i class="bi bi-image me-1"></i> Pilih File
         </button>
@@ -46,7 +46,7 @@
 <div id="{{ $overlayId }}" class="laporaja-cam-overlay">
     <div class="laporaja-cam-dialog">
         <div class="laporaja-cam-header">
-            <h6 class="m-0 fw-bold">
+            <h6 class="m-0 fw-bold" style="font-size:.9rem;">
                 <i class="bi bi-camera-fill me-1"></i> Ambil Foto
             </h6>
             <button type="button" class="laporaja-cam-close"

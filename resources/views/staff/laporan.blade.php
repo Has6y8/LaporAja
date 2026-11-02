@@ -4,16 +4,16 @@
 
 @section('content')
 
-<div class="mb-4">
-    <h4 class="fw-bold mb-1">Tugas Saya</h4>
-    <p class="text-secondary mb-0 small">
-        Laporan yang sudah diverifikasi admin & menunggu ditangani.
-    </p>
+<div class="page-header">
+    <div>
+        <h4>Tugas Saya</h4>
+        <p>Laporan yang sudah diverifikasi admin & menunggu ditangani.</p>
+    </div>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h6 class="fw-bold mb-0">Laporan Aktif</h6>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold mb-0" style="font-size:.9rem;">Laporan Aktif</h6>
         <span class="badge text-bg-light">{{ $laporans->count() }}</span>
     </div>
 
@@ -22,33 +22,27 @@
             <a href="{{ route('laporan.show', $l) }}" class="laporan-item">
                 <div class="laporan-thumb">
                     @if($l->foto_bukti)
-                        <img src="{{ asset('storage/' . $l->foto_bukti) }}"
-                             style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+                        <img src="{{ asset('storage/' . $l->foto_bukti) }}" alt="{{ $l->judul }}">
                     @else
                         <i class="bi bi-image"></i>
                     @endif
                 </div>
-                <div class="flex-grow-1 min-width-0">
-                    <div class="fw-semibold text-truncate mb-1">{{ $l->judul }}</div>
-                    <div class="small text-secondary d-flex flex-wrap gap-3 mb-1">
-                        <span><i class="bi bi-geo-alt me-1"></i>{{ $l->lokasi }}</span>
-                        <span><i class="bi bi-person me-1"></i>{{ $l->user->name }}</span>
-                        <span><i class="bi bi-calendar3 me-1"></i>{{ $l->created_at->format('d M Y') }}</span>
+                <div class="flex-grow-1" style="min-width:0;">
+                    <div class="laporan-title text-truncate">{{ $l->judul }}</div>
+                    <div class="laporan-meta">
+                        <span><i class="bi bi-geo-alt"></i>{{ $l->lokasi }}</span>
+                        <span><i class="bi bi-person"></i>{{ $l->user->name }}</span>
+                        <span><i class="bi bi-calendar3"></i>{{ $l->created_at->format('d M Y') }}</span>
                     </div>
-                    <div class="d-flex gap-1 flex-wrap">
-                        <span class="status-badge status-{{ $l->status }}">
-                            {{ $l->status_badge['label'] }}
-                        </span>
-                    </div>
+                    <span class="status-badge status-{{ $l->status }}">{{ $l->status_badge['label'] }}</span>
                 </div>
-                <i class="bi bi-chevron-right text-secondary flex-shrink-0"></i>
+                <i class="bi bi-chevron-right text-secondary flex-shrink-0" style="align-self:center;"></i>
             </a>
         @empty
-            <div class="text-center py-5">
-                <i class="bi bi-check2-circle display-4 text-success opacity-50"></i>
-                <p class="text-secondary mt-3 mb-0 small">
-                    Tidak ada tugas aktif. Kerja bagus! 🎉
-                </p>
+            <div class="empty-state">
+                <div class="empty-icon" style="background:#d1fae5;color:#059669;"><i class="bi bi-check2-circle"></i></div>
+                <div class="empty-title">Tidak ada tugas aktif</div>
+                <div class="empty-desc">Kerja bagus! 🎉</div>
             </div>
         @endforelse
     </div>

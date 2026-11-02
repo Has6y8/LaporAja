@@ -4,10 +4,10 @@
 
 @section('content')
 
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+<div class="page-header">
     <div>
-        <h4 class="fw-bold mb-1">Kelola User</h4>
-        <p class="text-secondary mb-0 small">Tambah & kelola akun.</p>
+        <h4>Kelola User</h4>
+        <p>Tambah & kelola akun.</p>
     </div>
     <button class="btn btn-primary d-flex align-items-center gap-2"
             data-bs-toggle="modal" data-bs-target="#addUserModal">
@@ -15,34 +15,23 @@
     </button>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center gap-2">
-        <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger d-flex align-items-center gap-2">
-        <i class="bi bi-exclamation-circle-fill"></i> {{ session('error') }}
-    </div>
-@endif
-
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h6 class="fw-bold mb-0">Daftar User</h6>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold mb-0" style="font-size:.9rem;">Daftar User</h6>
         <span class="badge text-bg-light">{{ $users->count() }} akun</span>
     </div>
 
     <div class="card-body p-0">
         @forelse($users as $u)
-            <div class="d-flex justify-content-between align-items-center gap-3 p-3 border-bottom flex-wrap">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                         style="width:42px;height:42px;background:#ecfdf5;color:#059669;">
+            <div class="d-flex justify-content-between align-items-center gap-3 p-3 flex-wrap" style="border-bottom:1px solid var(--c-border);">
+                <div class="d-flex align-items-center gap-3" style="min-width:0;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                         style="width:42px;height:42px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-size:.95rem;">
                         {{ strtoupper(substr($u->name,0,1)) }}
                     </div>
-                    <div>
-                        <div class="fw-semibold small">{{ $u->name }}</div>
-                        <div class="text-secondary" style="font-size:.78rem;">
+                    <div style="min-width:0;">
+                        <div class="fw-semibold" style="font-size:.85rem;">{{ $u->name }}</div>
+                        <div style="font-size:.75rem;color:var(--c-muted);">
                             {{ $u->email }}
                             @if($u->nisn_nip) • NIP/NISN: {{ $u->nisn_nip }} @endif
                             @if($u->kelas) • {{ $u->kelas }} @endif
@@ -68,7 +57,6 @@
                         <span class="badge" style="background:#fee2e2;color:#991b1b;"><i class="bi bi-x-circle-fill"></i> Ditolak</span>
                     @endif
 
-                    {{-- TOMBOL TOGGLE IZIN (KHUSUS SUPER ADMIN & ROLE ADMIN) --}}
                     @if(auth()->user()->isSuperAdmin() && $u->role === 'admin')
                         <form method="POST" action="{{ route('admin.users.toggle_manage', $u->id) }}" class="d-inline">
                             @csrf @method('PUT')
@@ -77,48 +65,48 @@
                                     <i class="bi bi-shield-check"></i> Izin Aktif
                                 </button>
                             @else
-                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Beri Izin Kelola User">
+                                <button type="submit" class="btn btn-sm btn-light" title="Beri Izin Kelola User">
                                     <i class="bi bi-shield-slash"></i> Beri Izin
                                 </button>
                             @endif
                         </form>
                     @endif
 
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editUser{{ $u->id }}">
+                    <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editUser{{ $u->id }}">
                         <i class="bi bi-pencil"></i>
                     </button>
-                    <form method="POST" action="{{ route('admin.users.destroy', $u) }}" onsubmit="return confirm('Hapus user {{ $u->name }}?')">
+                    <form method="POST" action="{{ route('admin.users.destroy', $u) }}" onsubmit="return confirm('Hapus user {{ $u->name }}?')" class="d-inline">
                         @csrf @method('DELETE')
-                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-sm btn-light" style="color:#dc2626;"><i class="bi bi-trash"></i></button>
                     </form>
                 </div>
             </div>
 
-            {{-- MODAL EDIT USER --}}
+            {{-- MODAL EDIT --}}
             <div class="modal fade" id="editUser{{ $u->id }}" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <form method="POST" action="{{ route('admin.users.update', $u->id) }}">
                         @csrf @method('PUT')
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Edit User: {{ $u->name }}</h5>
+                                <h5 class="modal-title">Edit: {{ $u->name }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="modal-body p-4">
+                            <div class="modal-body">
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                                        <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                                         <input type="text" name="name" class="form-control" value="{{ $u->name }}" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold">Email <span class="text-danger">*</span></label>
+                                        <label class="form-label">Email <span class="text-danger">*</span></label>
                                         <input type="email" name="email" class="form-control" value="{{ $u->email }}" required>
                                     </div>
                                 </div>
-                                
-                                <div class="row g-3 mb-4">
+
+                                <div class="row g-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-semibold">Role <span class="text-danger">*</span></label>
+                                        <label class="form-label">Role <span class="text-danger">*</span></label>
                                         <select name="role" class="form-select role-select" id="role-{{ $u->id }}" onchange="updateForm('{{ $u->id }}')" required>
                                             <option value="user" {{ $u->role === 'user' ? 'selected' : '' }}>User</option>
                                             <option value="staff" {{ $u->role === 'staff' ? 'selected' : '' }}>Staff</option>
@@ -126,7 +114,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6" id="wrap-status-{{ $u->id }}">
-                                        <label class="form-label small fw-semibold">Status <span class="text-danger">*</span></label>
+                                        <label class="form-label">Status <span class="text-danger">*</span></label>
                                         <select name="status_akun" class="form-select" required>
                                             <option value="approved" {{ $u->status_akun === 'approved' ? 'selected' : '' }}>Aktif / Approved</option>
                                             <option value="pending" {{ $u->status_akun === 'pending' ? 'selected' : '' }}>Pending</option>
@@ -135,11 +123,11 @@
                                     </div>
                                 </div>
 
-                                <hr class="text-secondary opacity-25 mb-4">
+                                <hr style="opacity:.15;">
 
                                 <div class="row g-3 mb-3" id="wrap-tipe-{{ $u->id }}">
                                     <div class="col-md-12">
-                                        <label class="form-label small fw-semibold">Tipe User <span class="text-danger">*</span></label>
+                                        <label class="form-label">Tipe User <span class="text-danger">*</span></label>
                                         <select name="tipe_user" class="form-select" id="tipe-{{ $u->id }}" onchange="updateForm('{{ $u->id }}')">
                                             <option value="siswa" {{ $u->tipe_user === 'siswa' ? 'selected' : '' }}>Siswa</option>
                                             <option value="guru" {{ $u->tipe_user === 'guru' ? 'selected' : '' }}>Guru</option>
@@ -147,43 +135,40 @@
                                     </div>
                                 </div>
 
-                                {{-- FORM SISWA --}}
                                 <div id="form-siswa-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">NISN</label>
+                                            <label class="form-label">NISN</label>
                                             <input type="text" name="nisn_nip" class="form-control input-siswa" value="{{ $u->nisn_nip }}">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">Kelas</label>
+                                            <label class="form-label">Kelas</label>
                                             <input type="text" name="kelas" class="form-control input-siswa" value="{{ $u->kelas }}">
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- FORM GURU --}}
                                 <div id="form-guru-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">NIP</label>
+                                            <label class="form-label">NIP</label>
                                             <input type="text" name="nisn_nip" class="form-control input-guru" value="{{ $u->nisn_nip }}">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">Jabatan</label>
+                                            <label class="form-label">Jabatan</label>
                                             <input type="text" name="jabatan" class="form-control input-guru" value="{{ $u->jabatan }}">
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- FORM PEGAWAI (STAFF & ADMIN) --}}
                                 <div id="form-pegawai-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">NIP Pegawai</label>
+                                            <label class="form-label">NIP Pegawai</label>
                                             <input type="text" name="nisn_nip" class="form-control input-pegawai" value="{{ $u->nisn_nip }}">
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-semibold">Jabatan</label>
+                                            <label class="form-label">Jabatan</label>
                                             <input type="text" name="jabatan" class="form-control input-pegawai" value="{{ $u->jabatan }}">
                                         </div>
                                     </div>
@@ -191,31 +176,32 @@
 
                                 <div class="row g-3">
                                     <div class="col-md-12">
-                                        <label class="form-label small fw-semibold">No. Telepon</label>
+                                        <label class="form-label">No. Telepon</label>
                                         <input type="text" name="no_telepon" class="form-control" value="{{ $u->no_telepon }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary fw-semibold">Simpan Perubahan</button>
+                                <button type="submit" class="btn btn-primary fw-semibold">Simpan</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         @empty
-            <div class="text-center py-5">
-                <i class="bi bi-people display-4 text-secondary opacity-50"></i>
-                <p class="text-secondary mt-3 mb-0 small">Belum ada user.</p>
+            <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-people"></i></div>
+                <div class="empty-title">Belum ada user</div>
+                <div class="empty-desc">Tambahkan user pertama dengan tombol di atas.</div>
             </div>
         @endforelse
     </div>
 </div>
 
-{{-- MODAL TAMBAH USER --}}
+{{-- MODAL TAMBAH --}}
 <div class="modal fade" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <form method="POST" action="{{ route('admin.users.store') }}">
             @csrf
             <div class="modal-content">
@@ -223,25 +209,25 @@
                     <h5 class="modal-title"><i class="bi bi-person-plus-fill me-1"></i> Tambah User Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body">
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control" required>
                         </div>
                     </div>
 
-                    <div class="row g-3 mb-4">
+                    <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Password <span class="text-danger">*</span></label>
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
                             <input type="text" name="password" class="form-control" required value="password123">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Role <span class="text-danger">*</span></label>
+                            <label class="form-label">Role <span class="text-danger">*</span></label>
                             <select name="role" class="form-select role-select" id="role-add" onchange="updateForm('add')" required>
                                 <option value="">— Pilih Role —</option>
                                 <option value="user">User</option>
@@ -251,11 +237,11 @@
                         </div>
                     </div>
 
-                    <hr class="text-secondary opacity-25 mb-4">
+                    <hr style="opacity:.15;">
 
                     <div class="row g-3 mb-3" id="wrap-tipe-add">
                         <div class="col-md-12">
-                            <label class="form-label small fw-semibold">Tipe User <span class="text-danger">*</span></label>
+                            <label class="form-label">Tipe User <span class="text-danger">*</span></label>
                             <select name="tipe_user" class="form-select" id="tipe-add" onchange="updateForm('add')">
                                 <option value="siswa">Siswa</option>
                                 <option value="guru">Guru</option>
@@ -263,43 +249,40 @@
                         </div>
                     </div>
 
-                    {{-- FORM SISWA ADD --}}
                     <div id="form-siswa-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">NISN</label>
+                                <label class="form-label">NISN</label>
                                 <input type="text" name="nisn_nip" class="form-control input-siswa">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Kelas</label>
+                                <label class="form-label">Kelas</label>
                                 <input type="text" name="kelas" class="form-control input-siswa">
                             </div>
                         </div>
                     </div>
 
-                    {{-- FORM GURU ADD --}}
                     <div id="form-guru-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">NIP</label>
+                                <label class="form-label">NIP</label>
                                 <input type="text" name="nisn_nip" class="form-control input-guru">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Jabatan</label>
+                                <label class="form-label">Jabatan</label>
                                 <input type="text" name="jabatan" class="form-control input-guru">
                             </div>
                         </div>
                     </div>
 
-                    {{-- FORM PEGAWAI ADD --}}
                     <div id="form-pegawai-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">NIP Pegawai</label>
+                                <label class="form-label">NIP Pegawai</label>
                                 <input type="text" name="nisn_nip" class="form-control input-pegawai">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-semibold">Jabatan</label>
+                                <label class="form-label">Jabatan</label>
                                 <input type="text" name="jabatan" class="form-control input-pegawai">
                             </div>
                         </div>
@@ -307,13 +290,14 @@
 
                     <div class="row g-3">
                         <div class="col-md-12">
-                            <label class="form-label small fw-semibold">No. Telepon</label>
+                            <label class="form-label">No. Telepon</label>
                             <input type="text" name="no_telepon" class="form-control">
                         </div>
                     </div>
-                    
-                    <div id="adminWarning" class="alert alert-warning small mt-3 mb-0 d-none">
-                        <i class="bi bi-info-circle-fill"></i> Akun Admin baru menunggu approval Super Admin.
+
+                    <div id="adminWarning" class="alert-soft alert-info mt-3 mb-0 d-none" style="padding:.7rem .85rem;border-radius:8px;background:#eff6ff;color:#1e40af;border-left:3px solid #2563eb;font-size:.78rem;">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>Akun Admin baru menunggu approval Super Admin.</span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -332,18 +316,17 @@
     function updateForm(prefix) {
         const roleEl = document.getElementById('role-' + prefix);
         if (!roleEl) return;
-        
+
         const role = roleEl.value;
         const wrapTipe = document.getElementById('wrap-tipe-' + prefix);
         const wrapStatus = document.getElementById('wrap-status-' + prefix);
-        
+
         document.querySelectorAll(`#form-siswa-${prefix}, #form-guru-${prefix}, #form-pegawai-${prefix}`).forEach(el => el.style.display = 'none');
         document.querySelectorAll(`#form-siswa-${prefix} input, #form-guru-${prefix} input, #form-pegawai-${prefix} input`).forEach(i => i.disabled = true);
 
         if (role === 'user') {
-            if(wrapTipe) wrapTipe.style.display = 'block';
-            if(wrapStatus) wrapStatus.style.display = 'block';
-            
+            if (wrapTipe) wrapTipe.style.display = 'block';
+            if (wrapStatus) wrapStatus.style.display = 'block';
             const tipe = document.getElementById('tipe-' + prefix).value;
             if (tipe === 'siswa') {
                 document.getElementById(`form-siswa-${prefix}`).style.display = 'block';
@@ -353,18 +336,18 @@
                 document.querySelectorAll(`#form-guru-${prefix} input`).forEach(i => i.disabled = false);
             }
         } else if (role === 'staff') {
-            if(wrapTipe) wrapTipe.style.display = 'none';
-            if(wrapStatus) wrapStatus.style.display = 'none'; 
+            if (wrapTipe) wrapTipe.style.display = 'none';
+            if (wrapStatus) wrapStatus.style.display = 'none';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
             document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => i.disabled = false);
         } else if (role === 'admin') {
-            if(wrapTipe) wrapTipe.style.display = 'none';
-            if(wrapStatus) wrapStatus.style.display = 'block';
+            if (wrapTipe) wrapTipe.style.display = 'none';
+            if (wrapStatus) wrapStatus.style.display = 'block';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
             document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => i.disabled = false);
         } else {
-            if(wrapTipe) wrapTipe.style.display = 'none';
-            if(wrapStatus) wrapStatus.style.display = 'block';
+            if (wrapTipe) wrapTipe.style.display = 'none';
+            if (wrapStatus) wrapStatus.style.display = 'block';
         }
 
         if (prefix === 'add') {

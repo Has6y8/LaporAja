@@ -2,17 +2,18 @@
 
 @section('title', 'Buat Komplain')
 
-{{-- KODE SAKTI: Memberitahu VS Code agar garis merah $laporan hilang --}}
-@php /** @var \App\Models\Laporan $laporan */ @endphp
-
 @section('content')
 
-@php $user = auth()->user(); @endphp
+{{-- KODE SAKTI: Memberitahu VS Code agar tidak error garis merah pada variabel $laporan --}}
+@php 
+    /** @var \App\Models\Laporan $laporan */ 
+    $user = auth()->user(); 
+@endphp
 
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+<div class="page-header">
     <div>
-        <h4 class="fw-bold mb-1">Buat Komplain</h4>
-        <p class="text-secondary mb-0 small">
+        <h4>Buat Komplain</h4>
+        <p>
             @if($user->role === 'staff')
                 Komplain ke admin terkait laporan ini (tidak jelas, tidak pantas, dll).
             @else
@@ -25,42 +26,39 @@
     </a>
 </div>
 
-<div class="card border-0 shadow-sm mb-3">
+<div class="card mb-3">
     <div class="card-body">
-        <div class="small text-secondary mb-1">Laporan:</div>
+        <div style="font-size:.78rem;color:var(--c-muted);margin-bottom:.25rem;">Laporan:</div>
         <div class="fw-semibold">{{ $laporan->judul }}</div>
-        <div class="small text-secondary mt-1">
+        <div style="font-size:.78rem;color:var(--c-muted);margin-top:.35rem;">
             Status saat ini:
-            <span class="status-badge status-{{ $laporan->status }}">
+            <span class="status-badge status-{{ $laporan->status }} ms-1">
                 {{ $laporan->status_badge['label'] }}
             </span>
         </div>
     </div>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+<div class="card">
+    <div class="card-body">
         @if($errors->any())
-            <div class="alert alert-danger small">{{ $errors->first() }}</div>
+            <div style="padding:.85rem 1rem;border-radius:10px;background:#fef2f2;color:#991b1b;border-left:3px solid #dc2626;font-size:.85rem;margin-bottom:1rem;">
+                {{ $errors->first() }}
+            </div>
         @endif
 
         <form method="POST" action="{{ route('komplain.store', $laporan->id) }}">
             @csrf
 
             <div class="mb-3">
-                <label class="form-label fw-semibold small">
-                    Tipe Komplain <span class="text-danger">*</span>
-                </label>
+                <label class="form-label">Tipe Komplain <span class="text-danger">*</span></label>
                 <select name="tipe" class="form-select" required>
                     <option value="">— Pilih Tipe —</option>
 
-                    {{-- OPSI KHUSUS USER (Siswa/Guru) --}}
                     @if($user->role === 'user')
                         <option value="pengerjaan_tidak_sesuai">🛠️ Pengerjaan Tidak Sesuai</option>
                         <option value="lambat_respon">⏳ Respon / Pengerjaan Lambat</option>
                         <option value="lainnya">➕ Lainnya</option>
-                    
-                    {{-- OPSI KHUSUS STAFF (Teknisi) --}}
                     @elseif($user->role === 'staff')
                         <option value="kurang_jelas">📝 Laporan Kurang Jelas</option>
                         <option value="foto_tidak_pantas">📸 Foto Tidak Pantas</option>
@@ -71,20 +69,17 @@
                 </select>
             </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-semibold small">
-                    Isi Komplain <span class="text-danger">*</span>
-                </label>
+            <div class="mb-3">
+                <label class="form-label">Isi Komplain <span class="text-danger">*</span></label>
                 <textarea name="isi" rows="5" class="form-control" required
                           placeholder="Jelaskan keluhan Anda secara detail...">{{ old('isi') }}</textarea>
             </div>
 
             @if($user->role === 'staff')
-                <div class="alert alert-info small d-flex align-items-start gap-2">
+                <div class="alert-soft alert-info mb-3" style="padding:.85rem 1rem;border-radius:10px;background:#eff6ff;color:#1e40af;border-left:3px solid #2563eb;font-size:.82rem;display:flex;gap:.55rem;">
                     <i class="bi bi-info-circle-fill"></i>
                     <div>
-                        Jika Anda memilih <strong>"Minta Hapus Laporan"</strong>, admin akan memutuskan
-                        apakah laporan ini ditolak atau dihapus permanen.
+                        Jika Anda memilih <strong>"Minta Hapus Laporan"</strong>, admin akan memutuskan apakah laporan ini ditolak atau dihapus permanen.
                     </div>
                 </div>
             @endif
