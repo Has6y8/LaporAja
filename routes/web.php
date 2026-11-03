@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     ProfileController,
 };
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File; // Tambahan untuk penanganan gambar
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -75,3 +76,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/super/reject/{user}',  [SuperAdminController::class, 'reject'])->name('super.reject');
     });
 });
+
+// =========================================================================
+// WORKAROUND UNTUK WASMER: Membaca gambar langsung dari folder storage
+// Tanpa perlu menjalankan perintah `php artisan storage:link`
+// =========================================================================
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    
+    if (!File::exists($filePath)) {
+        abort(404);
+    }
+    
+    return response()->file($filePath);
+})->where('path', '.*')->name('storage.local');
