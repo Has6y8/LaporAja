@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://unpkg.com/medium-zoom@1.0.8/dist/medium-zoom.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
@@ -585,7 +584,7 @@
             gap: .5rem;
         }
 
-        /* ========== CAMERA OVERLAY (preserved) ========== */
+        /* ========== CAMERA OVERLAY ========== */
         .laporaja-cam-overlay {
             display: none;
             position: fixed; inset: 0;
@@ -668,18 +667,6 @@
 
         .zoomable { cursor: zoom-in; transition: transform var(--tr); }
         .zoomable:hover { transform: scale(1.01); }
-
-        /* ========== FIX BUG ZOOM: Memastikan gambar zoom di atas sidebar ========== */
-        .medium-zoom-overlay {
-            z-index: 9999999 !important;
-            background: rgba(0, 0, 0, 0.85) !important;
-            backdrop-filter: blur(4px);
-        }
-        .medium-zoom-image--opened {
-            z-index: 10000000 !important;
-            border-radius: 8px;
-            box-shadow: 0 20px 50px rgba(0,0,0,.5);
-        }
 
         /* ========== RESPONSIVE ========== */
         @media (max-width: 991px) {
@@ -798,14 +785,12 @@
                 <span>Tugas</span>
             </a>
         @else
-            {{-- Menu Admin Mobile --}}
             <a href="{{ route('admin.komplain') }}"
                class="bottom-nav-item {{ request()->routeIs('admin.komplain') ? 'active' : '' }}">
                 <i class="bi bi-chat-square-text-fill"></i>
                 <span>Komplain</span>
             </a>
             
-            {{-- Cek isAdmin() bukan can_manage_users lagi --}}
             @if($user->isAdmin())
                 <a href="{{ route('admin.users') }}"
                    class="bottom-nav-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
@@ -827,7 +812,6 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/medium-zoom@1.0.8/dist/medium-zoom.min.js"></script>
 <script>
     /* ====== DRAWER ====== */
     function toggleDrawer() { document.body.classList.toggle('drawer-open'); }
@@ -852,11 +836,6 @@
 
     @if(session('success')) showToast(@json(session('success')), 'success'); @endif
     @if(session('error'))   showToast(@json(session('error')), 'danger'); @endif
-
-    /* ====== MEDIUM ZOOM ====== */
-    if (typeof mediumZoom === 'function') {
-        mediumZoom('.zoomable', { background: 'rgba(0,0,0,.85)' });
-    }
 
     /* ====== CAMERA ====== */
     window.LaporAjaStreams = {};
@@ -941,7 +920,6 @@
             input.files = dt.files;
             prevEl.src = URL.createObjectURL(blob);
             prevWr.style.display = 'block';
-            setTimeout(() => { if (typeof mediumZoom === 'function') mediumZoom('.zoomable'); }, 100);
             window.LaporAja_closeCamera(name);
         }, 'image/jpeg', 0.9);
     };
@@ -953,7 +931,6 @@
         reader.onload = function (e) {
             document.getElementById(previewId).src = e.target.result;
             document.getElementById(previewWrapId).style.display = 'block';
-            setTimeout(() => { if (typeof mediumZoom === 'function') mediumZoom('.zoomable'); }, 100);
         };
         reader.readAsDataURL(file);
     };

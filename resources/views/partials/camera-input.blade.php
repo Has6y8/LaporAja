@@ -17,7 +17,7 @@
 
     <div id="{{ $previewWrapId }}" class="mb-2" style="display: {{ $existingFoto ? 'block' : 'none' }};">
         <img id="{{ $previewId }}"
-             src="{{ $existingFoto ? asset('storage/' . $existingFoto) : '' }}"
+             src="{{ $existingFoto ? $existingFoto : '' }}"
              class="img-fluid rounded-3 border zoomable"
              style="max-height: 280px;">
     </div>

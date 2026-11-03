@@ -63,7 +63,7 @@
                 <div class="card-body">
                     <h6 class="fw-bold mb-3" style="font-size:.9rem;"><i class="bi bi-camera-fill text-danger me-1"></i> Foto Bukti Kerusakan</h6>
                     <div class="d-flex justify-content-center bg-light rounded-3 p-2 border">
-                        <img src="{{ asset('storage/' . $laporan->foto_bukti) }}" 
+                        <img src="{{ $laporan->foto_bukti }}" 
                              class="img-fluid rounded-3 zoomable" 
                              style="max-height: 450px; object-fit: contain; width: 100%;">
                     </div>
@@ -76,7 +76,7 @@
                 <div class="card-body">
                     <h6 class="fw-bold mb-3" style="font-size:.9rem;"><i class="bi bi-check-circle-fill text-success me-1"></i> Foto Bukti Perbaikan</h6>
                     <div class="d-flex justify-content-center bg-light rounded-3 p-2 border">
-                        <img src="{{ asset('storage/' . $laporan->foto_perbaikan) }}" 
+                        <img src="{{ $laporan->foto_perbaikan }}" 
                              class="img-fluid rounded-3 zoomable" 
                              style="max-height: 450px; object-fit: contain; width: 100%;">
                     </div>

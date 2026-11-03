@@ -37,8 +37,13 @@ class AdminController extends Controller
         
         if ($request->hasFile('foto_perbaikan')) {
             $image = $request->file('foto_perbaikan');
+            
+            // Kompresi + Base64
             $manager = new ImageManager(new Driver());
-            $compressedImage = $manager->read($image)->scaleDown(width: 800)->toJpeg(60);
+            $compressedImage = $manager->read($image)
+                ->scaleDown(width: 800)
+                ->toJpeg(60);
+
             $update['foto_perbaikan'] = 'data:image/jpeg;base64,' . base64_encode((string) $compressedImage);
         }
         
@@ -81,8 +86,11 @@ class AdminController extends Controller
         } elseif ($data['aksi'] === 'hapus_laporan') {
             $laporan = $komplain->laporan;
             if ($laporan) {
+                // Hapus relasi terlebih dahulu
                 $laporan->komplains()->delete();
                 $laporan->statusLogs()->delete();
+                
+                // Hapus laporan (Base64 di database otomatis terhapus)
                 $laporan->delete();
             }
             return back()->with('success', 'Laporan berhasil dihapus permanen.');
@@ -104,7 +112,7 @@ class AdminController extends Controller
             'name'       => 'required|string|max:100',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-            'role'       => 'required|in:user,staff,admin', // Super admin tidak bisa dibuat dari form
+            'role'       => 'required|in:user,staff,admin', // Super admin tidak bisa dibuat
             'tipe_user'  => 'nullable|in:siswa,guru',
             'nisn_nip'   => 'nullable|string',
             'kelas'      => 'nullable|string',
@@ -123,7 +131,8 @@ class AdminController extends Controller
             $data['tipe_user'] = null;
             $data['kelas']     = null;
         } else {
-            $data['status_akun'] = 'approved'; // Admin yang dibuat langsung aktif
+            // Admin yang dibuat langsung aktif
+            $data['status_akun'] = 'approved'; 
             $data['is_approved'] = true;
             $data['tipe_user'] = null;
             $data['kelas']     = null;

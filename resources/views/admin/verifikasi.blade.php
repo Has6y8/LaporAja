@@ -36,8 +36,7 @@
             <p style="font-size:.85rem;color:var(--c-muted);">{{ $l->deskripsi }}</p>
 
             @if($l->foto_bukti)
-                <img src="{{ asset('storage/' . $l->foto_bukti) }}"
-                     class="rounded-3 border zoomable mb-3" style="max-height:200px;">
+                <img src="{{ $l->foto_bukti }}" class="rounded-3 border zoomable mb-3" style="max-height:200px;">
             @endif
 
             <div class="d-flex gap-2 flex-wrap">

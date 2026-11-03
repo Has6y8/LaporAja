@@ -22,7 +22,7 @@
             <a href="{{ route('laporan.show', $l) }}" class="laporan-item">
                 <div class="laporan-thumb">
                     @if($l->foto_bukti)
-                        <img src="{{ asset('storage/' . $l->foto_bukti) }}" alt="{{ $l->judul }}">
+                        <img src="{{ $l->foto_bukti }}" alt="{{ $l->judul }}">
                     @else
                         <i class="bi bi-image"></i>
                     @endif
