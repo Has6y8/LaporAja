@@ -798,12 +798,15 @@
                 <span>Tugas</span>
             </a>
         @else
+            {{-- Menu Admin Mobile --}}
             <a href="{{ route('admin.komplain') }}"
                class="bottom-nav-item {{ request()->routeIs('admin.komplain') ? 'active' : '' }}">
                 <i class="bi bi-chat-square-text-fill"></i>
                 <span>Komplain</span>
             </a>
-            @if($user->isSuperAdmin() || $user->can_manage_users)
+            
+            {{-- Cek isAdmin() bukan can_manage_users lagi --}}
+            @if($user->isAdmin())
                 <a href="{{ route('admin.users') }}"
                    class="bottom-nav-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                     <i class="bi bi-people-fill"></i>

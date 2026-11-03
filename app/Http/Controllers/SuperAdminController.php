@@ -9,6 +9,7 @@ class SuperAdminController extends Controller
 {
     public function approvals()
     {
+        // Hanya menampilkan user biasa/staff/admin yang pending
         $pendingUsers = User::where('status_akun', 'pending')
             ->where('role', '!=', 'super_admin')
             ->latest()->get();

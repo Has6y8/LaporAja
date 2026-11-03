@@ -11,7 +11,7 @@ use App\Http\Controllers\{
     ProfileController,
 };
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\File; // Tambahan untuk penanganan gambar
+use Illuminate\Support\Facades\File;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -53,40 +53,28 @@ Route::middleware('auth')->group(function () {
         Route::put('/staff/laporan/{laporan}/status', [StaffController::class, 'updateStatus'])->name('staff.updateStatus');
     });
 
-    // ===== ADMIN & SUPER ADMIN =====
+    // ===== ADMIN & SUPER ADMIN (Digabung) =====
     Route::middleware('role:admin,super_admin')->group(function () {
         Route::put('/admin/laporan/{laporan}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
 
-        // Kelola user (Dibatasi middleware can_manage_users)
-        Route::middleware('can_manage_users')->group(function () {
-            Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
-            Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
-            Route::put('/admin/users/{user}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
-            Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
-            Route::put('/admin/users/{user}/toggle-manage', [AdminController::class, 'toggleManageUsers'])->name('admin.users.toggle_manage');
-        });
-    });
-
-    // ===== SUPER ADMIN =====
-    Route::middleware('role:super_admin')->group(function () {
-        Route::get('/super/approvals',      [SuperAdminController::class, 'approvals'])->name('super.approvals');
-        Route::put('/super/approve/{user}', [SuperAdminController::class, 'approve'])->name('super.approve');
-        Route::put('/super/reject/{user}',  [SuperAdminController::class, 'reject'])->name('super.reject');
+        // Kelola user (Sekarang bebas diakses Admin)
+        Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
+        Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
+        Route::put('/admin/users/{user}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
+        Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
+        
+        // Fitur Super Admin (Approvals) dipindah ke Admin
+        Route::get('/admin/approvals',      [SuperAdminController::class, 'approvals'])->name('super.approvals');
+        Route::put('/admin/approve/{user}', [SuperAdminController::class, 'approve'])->name('super.approve');
+        Route::put('/admin/reject/{user}',  [SuperAdminController::class, 'reject'])->name('super.reject');
     });
 });
 
-// =========================================================================
-// WORKAROUND UNTUK WASMER: Membaca gambar langsung dari folder storage
-// Tanpa perlu menjalankan perintah `php artisan storage:link`
-// =========================================================================
+// Rute gambar (jika masih dipakai)
 Route::get('/storage/{path}', function ($path) {
     $filePath = storage_path('app/public/' . $path);
-    
-    if (!File::exists($filePath)) {
-        abort(404);
-    }
-    
+    if (!File::exists($filePath)) { abort(404); }
     return response()->file($filePath);
 })->where('path', '.*')->name('storage.local');

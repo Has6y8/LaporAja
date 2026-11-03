@@ -128,9 +128,7 @@
                 </div>
 
                 <div class="d-flex gap-2 align-items-center flex-wrap">
-                    @if($u->role === 'super_admin')
-                        <span class="badge" style="background:#fef3c7;color:#92400e;">SUPER ADMIN</span>
-                    @elseif($u->role === 'admin')
+                    @if($u->role === 'admin')
                         <span class="badge" style="background:#dbeafe;color:#1e40af;">ADMIN</span>
                     @elseif($u->role === 'staff')
                         <span class="badge" style="background:#e0e7ff;color:#3730a3;">STAFF</span>

@@ -8,8 +8,9 @@ use App\Models\StatusLaporan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AdminController extends Controller
 {
@@ -20,31 +21,36 @@ class AdminController extends Controller
             'catatan' => 'nullable|string|max:1000',
         ];
         if ($request->status === 'selesai') {
-            $rules['foto_perbaikan'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+            $rules['foto_perbaikan'] = 'required|image|mimes:jpg,jpeg,png|max:5120';
         } else {
-            $rules['foto_perbaikan'] = 'nullable|image|mimes:jpg,jpeg,png|max:2048';
+            $rules['foto_perbaikan'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
         }
         $data = $request->validate($rules, [
             'foto_perbaikan.required' => 'Foto bukti perbaikan wajib diunggah saat status Selesai.',
         ]);
+        
         $update = [
             'status'        => $data['status'],
             'staff_id'      => auth()->id(),
             'catatan_staff' => $data['catatan'] ?? null,
         ];
+        
         if ($request->hasFile('foto_perbaikan')) {
-            if ($laporan->foto_perbaikan && Storage::disk('public')->exists($laporan->foto_perbaikan)) {
-                Storage::disk('public')->delete($laporan->foto_perbaikan);
-            }
-            $update['foto_perbaikan'] = $request->file('foto_perbaikan')->store('perbaikan', 'public');
+            $image = $request->file('foto_perbaikan');
+            $manager = new ImageManager(new Driver());
+            $compressedImage = $manager->read($image)->scaleDown(width: 800)->toJpeg(60);
+            $update['foto_perbaikan'] = 'data:image/jpeg;base64,' . base64_encode((string) $compressedImage);
         }
+        
         $laporan->update($update);
+        
         StatusLaporan::create([
             'laporan_id' => $laporan->id,
             'user_id'    => auth()->id(),
             'status'     => $data['status'],
             'keterangan' => $data['catatan'] ?? 'Status diperbarui.',
         ]);
+        
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
 
@@ -61,8 +67,6 @@ class AdminController extends Controller
             'aksi'         => 'required|in:respon_saja,tolak_laporan,hapus_laporan',
         ]);
 
-        // FIX: 'tolak_laporan' -> status komplain = 'ditolak'
-        //      selain itu -> status komplain = 'direspon'
         $statusKomplain = $data['aksi'] === 'tolak_laporan' ? 'ditolak' : 'direspon';
 
         $komplain->update([
@@ -73,18 +77,10 @@ class AdminController extends Controller
         ]);
 
         if ($data['aksi'] === 'tolak_laporan') {
-            // FIX: HANYA menolak komplain. Status laporan TIDAK diubah.
             return back()->with('success', 'Komplain berhasil ditolak. Status laporan tidak berubah.');
-
         } elseif ($data['aksi'] === 'hapus_laporan') {
             $laporan = $komplain->laporan;
             if ($laporan) {
-                if ($laporan->foto_bukti && Storage::disk('public')->exists($laporan->foto_bukti)) {
-                    Storage::disk('public')->delete($laporan->foto_bukti);
-                }
-                if ($laporan->foto_perbaikan && Storage::disk('public')->exists($laporan->foto_perbaikan)) {
-                    Storage::disk('public')->delete($laporan->foto_perbaikan);
-                }
                 $laporan->komplains()->delete();
                 $laporan->statusLogs()->delete();
                 $laporan->delete();
@@ -97,6 +93,7 @@ class AdminController extends Controller
 
     public function userIndex()
     {
+        // Super Admin disembunyikan dari daftar
         $users = User::where('role', '!=', 'super_admin')->latest()->get();
         return view('admin.users', compact('users'));
     }
@@ -107,7 +104,7 @@ class AdminController extends Controller
             'name'       => 'required|string|max:100',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-            'role'       => 'required|in:user,staff,admin',
+            'role'       => 'required|in:user,staff,admin', // Super admin tidak bisa dibuat dari form
             'tipe_user'  => 'nullable|in:siswa,guru',
             'nisn_nip'   => 'nullable|string',
             'kelas'      => 'nullable|string',
@@ -126,23 +123,22 @@ class AdminController extends Controller
             $data['tipe_user'] = null;
             $data['kelas']     = null;
         } else {
-            $data['status_akun'] = 'pending';
-            $data['is_approved'] = false;
+            $data['status_akun'] = 'approved'; // Admin yang dibuat langsung aktif
+            $data['is_approved'] = true;
             $data['tipe_user'] = null;
             $data['kelas']     = null;
         }
 
         User::create($data);
         
-        $msg = $data['role'] === 'admin' ? "Admin {$data['name']} diajukan. Menunggu approval." : "User {$data['name']} berhasil ditambahkan.";
-        return back()->with('success', $msg);
+        return back()->with('success', "User {$data['name']} berhasil ditambahkan.");
     }
 
     public function userUpdate(Request $request, User $user)
     {
-        // Super Admin tidak bisa diedit oleh Admin biasa
-        if ($user->role === 'super_admin' && !auth()->user()->isSuperAdmin()) {
-            return back()->with('error', 'Hanya Super Admin yang bisa mengedit Super Admin.');
+        // Mencegah Admin mengedit Super Admin yang tersembunyi
+        if ($user->role === 'super_admin') {
+            return back()->with('error', 'Akun Super Admin tidak dapat diedit.');
         }
 
         $data = $request->validate([
@@ -173,31 +169,6 @@ class AdminController extends Controller
         $user->update($data);
 
         return back()->with('success', "Data user {$user->name} berhasil diperbarui.");
-    }
-
-    public function toggleManageUsers(User $user)
-    {
-        // Hanya Super Admin yang bisa mengakses ini
-        if (!auth()->user()->isSuperAdmin()) {
-            return back()->with('error', 'Hanya Super Admin yang bisa memberikan izin ini.');
-        }
-
-        // Jangan sampai menurunkan derajat Super Admin
-        if ($user->role === 'super_admin') {
-            return back()->with('error', 'Tidak bisa mengubah izin Super Admin.');
-        }
-
-        // Hanya bisa diberikan ke Admin
-        if ($user->role !== 'admin') {
-            return back()->with('error', 'Izin ini hanya bisa diberikan ke Admin.');
-        }
-
-        $user->update([
-            'can_manage_users' => !$user->can_manage_users
-        ]);
-
-        $status = $user->can_manage_users ? 'diberikan' : 'dicabut';
-        return back()->with('success', "Izin kelola user berhasil {$status} untuk {$user->name}.");
     }
 
     public function userDestroy(User $user)

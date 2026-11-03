@@ -57,21 +57,6 @@
                         <span class="badge" style="background:#fee2e2;color:#991b1b;"><i class="bi bi-x-circle-fill"></i> Ditolak</span>
                     @endif
 
-                    @if(auth()->user()->isSuperAdmin() && $u->role === 'admin')
-                        <form method="POST" action="{{ route('admin.users.toggle_manage', $u->id) }}" class="d-inline">
-                            @csrf @method('PUT')
-                            @if($u->can_manage_users)
-                                <button type="submit" class="btn btn-sm btn-success" title="Cabut Izin Kelola User">
-                                    <i class="bi bi-shield-check"></i> Izin Aktif
-                                </button>
-                            @else
-                                <button type="submit" class="btn btn-sm btn-light" title="Beri Izin Kelola User">
-                                    <i class="bi bi-shield-slash"></i> Beri Izin
-                                </button>
-                            @endif
-                        </form>
-                    @endif
-
                     <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#editUser{{ $u->id }}">
                         <i class="bi bi-pencil"></i>
                     </button>
@@ -297,7 +282,7 @@
 
                     <div id="adminWarning" class="alert-soft alert-info mt-3 mb-0 d-none" style="padding:.7rem .85rem;border-radius:8px;background:#eff6ff;color:#1e40af;border-left:3px solid #2563eb;font-size:.78rem;">
                         <i class="bi bi-info-circle-fill"></i>
-                        <span>Akun Admin baru menunggu approval Super Admin.</span>
+                        <span>Akun Admin baru akan langsung aktif.</span>
                     </div>
                 </div>
                 <div class="modal-footer">
