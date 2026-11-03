@@ -39,12 +39,7 @@
         </button>
     </form>
 
-    <p class="text-center text-secondary small mt-3 mb-0">
-        Belum punya akun?
-        <a href="{{ route('register') }}" class="link-primary">Daftar sekarang</a>
-    </p>
-
-    <div class="demo-box">
+    <div class="demo-box mt-4">
         <div class="title"><i class="bi bi-key-fill"></i> Akun Demo</div>
         <div class="row-demo">
             <div><b>User:</b> user@laporaja.id</div>

@@ -14,34 +14,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function showRegister()
-    {
-        return view('auth.register');
-    }
-
-    public function register(Request $request)
-    {
-        $data = $request->validate([
-            'name'             => 'required|string|max:100',
-            'email'            => 'required|email|unique:users,email',
-            'password'         => 'required|min:6|confirmed',
-            'nisn_nip'         => 'nullable|string|max:30', // <-- Ubah ke nisn_nip
-            'kelas'            => 'nullable|string|max:30',
-            'no_telepon'       => 'nullable|string|max:20',
-            'alasan_pengajuan' => 'nullable|string|max:500',
-        ]);
-
-        $data['password']    = Hash::make($data['password']);
-        $data['role']        = 'user';
-        $data['is_approved'] = false;
-        $data['status_akun'] = 'pending';
-
-        User::create($data);
-
-        return redirect()->route('login')
-            ->with('success', 'Pengajuan akun berhasil dikirim! Tunggu konfirmasi dari Super Admin.');
-    }
-
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -57,12 +29,12 @@ class AuthController extends Controller
 
         if ($user->status_akun === 'pending') {
             return back()->withErrors([
-                'email' => 'Akun Anda masih menunggu konfirmasi Super Admin.',
+                'email' => 'Akun Anda masih menunggu konfirmasi Admin.',
             ])->onlyInput('email');
         }
 
         if ($user->status_akun === 'rejected') {
-            $msg = 'Pengajuan akun Anda ditolak.';
+            $msg = 'Akun Anda ditolak.';
             if ($user->catatan_penolakan) {
                 $msg .= ' Alasan: ' . $user->catatan_penolakan;
             }

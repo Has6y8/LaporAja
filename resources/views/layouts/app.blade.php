@@ -669,6 +669,18 @@
         .zoomable { cursor: zoom-in; transition: transform var(--tr); }
         .zoomable:hover { transform: scale(1.01); }
 
+        /* ========== FIX BUG ZOOM: Memastikan gambar zoom di atas sidebar ========== */
+        .medium-zoom-overlay {
+            z-index: 9999999 !important;
+            background: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(4px);
+        }
+        .medium-zoom-image--opened {
+            z-index: 10000000 !important;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.5);
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 991px) {
             .app-sidebar { transform: translateX(-100%); }
@@ -840,7 +852,7 @@
 
     /* ====== MEDIUM ZOOM ====== */
     if (typeof mediumZoom === 'function') {
-        mediumZoom('.zoomable', { background: 'rgba(0,0,0,.88)' });
+        mediumZoom('.zoomable', { background: 'rgba(0,0,0,.85)' });
     }
 
     /* ====== CAMERA ====== */

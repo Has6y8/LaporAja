@@ -62,7 +62,11 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h6 class="fw-bold mb-3" style="font-size:.9rem;"><i class="bi bi-camera-fill text-danger me-1"></i> Foto Bukti Kerusakan</h6>
-                    <img src="{{ asset('storage/' . $laporan->foto_bukti) }}" class="img-fluid rounded-3 border zoomable">
+                    <div class="d-flex justify-content-center bg-light rounded-3 p-2 border">
+                        <img src="{{ asset('storage/' . $laporan->foto_bukti) }}" 
+                             class="img-fluid rounded-3 zoomable" 
+                             style="max-height: 450px; object-fit: contain; width: 100%;">
+                    </div>
                 </div>
             </div>
         @endif
@@ -71,7 +75,11 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h6 class="fw-bold mb-3" style="font-size:.9rem;"><i class="bi bi-check-circle-fill text-success me-1"></i> Foto Bukti Perbaikan</h6>
-                    <img src="{{ asset('storage/' . $laporan->foto_perbaikan) }}" class="img-fluid rounded-3 border zoomable">
+                    <div class="d-flex justify-content-center bg-light rounded-3 p-2 border">
+                        <img src="{{ asset('storage/' . $laporan->foto_perbaikan) }}" 
+                             class="img-fluid rounded-3 zoomable" 
+                             style="max-height: 450px; object-fit: contain; width: 100%;">
+                    </div>
                 </div>
             </div>
         @endif
@@ -82,7 +90,7 @@
                 @forelse($laporan->statusLogs()->latest()->get() as $log)
                     <div class="d-flex gap-3 pb-3">
                         <div class="flex-shrink-0 d-flex align-items-center justify-content-center rounded-circle"
-                             style="width:32px;height:32px;background:var(--c-soft);color:var(--c-primary);font-size:.85rem;flex-shrink:0;">
+                             style="width:32px;height:32px;background:var(--c-soft);color:var(--c-primary);font-size:.85rem;">
                             <i class="bi bi-check-circle-fill"></i>
                         </div>
                         <div class="flex-grow-1 pt-1" style="min-width:0;">
