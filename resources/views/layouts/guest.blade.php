@@ -2,11 +2,12 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#059669">
     <title>@yield('title') — LaporAja</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,270 +23,205 @@
             --c-ink-2: #334155;
             --c-muted: #64748b;
             --c-border: #e2e8f0;
-            --c-bg: #f8fafc;
             --r-sm: 10px;
             --r-md: 14px;
             --r-lg: 20px;
             --tr: 180ms cubic-bezier(.4,0,.2,1);
         }
+
         * { font-family: 'Inter', -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { min-height: 100vh; background: var(--c-bg); color: var(--c-ink); font-size: .9375rem; -webkit-font-smoothing: antialiased; }
+        body { background-color: #f8fafc; color: var(--c-ink); min-height: 100vh; margin: 0; overflow-x: hidden; }
 
-        .btn-primary {
-            --bs-btn-bg: var(--c-primary);
-            --bs-btn-border-color: var(--c-primary);
-            --bs-btn-hover-bg: var(--c-primary-dark);
-            --bs-btn-hover-border-color: var(--c-primary-dark);
-            --bs-btn-active-bg: var(--c-primary-dark);
-            --bs-btn-active-border-color: var(--c-primary-dark);
-            border-radius: var(--r-sm);
-            font-weight: 600;
-            min-height: 44px;
-            transition: all var(--tr);
-            box-shadow: 0 4px 12px rgba(5,150,105,.2);
-        }
-        .btn-primary:hover { box-shadow: 0 6px 18px rgba(5,150,105,.28); }
+        .auth-wrapper { display: flex; min-height: 100vh; width: 100%; position: relative; }
+        
+        /* =========================================
+           DESKTOP VIEW (Kiri Gambar, Kanan Form)
+           ========================================= */
+        @media (min-width: 992px) {
+            .auth-image-side {
+                width: 50%;
+                /* GAMBAR SEKOLAH (DESKTOP) */
+                background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReSw_vM67L7OxWZt3L59-G27v-_L0i_7IhHkwaFDeK7w&s=10');
+                background-size: cover;
+                background-position: center;
+                position: relative;
+                display: flex;
+            }
 
-        .form-control, .form-select {
-            border-radius: var(--r-sm);
-            border: 1px solid var(--c-border);
-            padding: .65rem .9rem;
-            font-size: .9375rem;
-            min-height: 44px;
-            transition: all var(--tr);
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--c-primary-light);
-            box-shadow: 0 0 0 3px rgba(16,185,129,.15);
-        }
-        .form-label { font-size: .8125rem; font-weight: 600; color: var(--c-ink-2); margin-bottom: .4rem; }
+            /* Overlay warna hijau transparan */
+            .auth-image-side::before {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(5, 150, 105, 0.6) 100%);
+            }
 
-        /* ===== BRAND SIDE ===== */
-        .brand-side {
-            background:
-                radial-gradient(circle at 85% 15%, rgba(255,255,255,.08) 0 30%, transparent 31%),
-                radial-gradient(circle at 15% 85%, rgba(16,185,129,.35) 0 40%, transparent 41%),
-                linear-gradient(150deg, #059669 0%, #064e3b 60%, #033b2b 100%);
-            color: #fff;
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
+            .auth-image-content {
+                position: relative; z-index: 1;
+                display: flex; flex-direction: column; justify-content: space-between;
+                height: 100%; padding: 4rem; color: #fff; width: 100%;
+            }
+
+            .brand-logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 800; font-size: 1.5rem; color: #fff; text-decoration: none; }
+            .brand-logo .logo-mark { width: 44px; height: 44px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+            
+            .image-text h2 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.03em; }
+            .image-text p { font-size: 1.1rem; opacity: 0.9; max-width: 480px; line-height: 1.6; }
+
+            .auth-form-side {
+                width: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1.5rem;
+                background: #fff;
+            }
+
+            .auth-form-container { width: 100%; max-width: 400px; }
+            .mobile-brand-logo { display: none !important; }
         }
-        .brand-inner {
-            position: relative;
-            z-index: 1;
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            justify-content: space-between;
-            max-width: 560px;
+
+        /* =========================================
+           MOBILE VIEW (Gambar Full Background)
+           ========================================= */
+        @media (max-width: 991px) {
+            .auth-wrapper {
+                align-items: center;
+                justify-content: center;
+                padding: 1.5rem 1rem;
+            }
+
+            .auth-image-side {
+                position: fixed;
+                inset: 0;
+                width: 100%;
+                height: 100vh;
+                z-index: -1;
+                /* GAMBAR SEKOLAH (MOBILE) */
+                background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReSw_vM67L7OxWZt3L59-G27v-_L0i_7IhHkwaFDeK7w&s=10');
+                background-size: cover;
+                background-position: center;
+            }
+
+            .auth-image-side::before {
+                content: '';
+                position: absolute; inset: 0;
+                background: linear-gradient(135deg, rgba(6, 78, 59, 0.9) 0%, rgba(5, 150, 105, 0.8) 100%);
+            }
+
+            /* Konten teks di gambar disembunyikan di HP */
+            .auth-image-content { display: none; }
+
+            .auth-form-side {
+                width: 100%;
+                background: transparent;
+                display: block;
+            }
+
+            /* Kotak Form Putih Melayang */
+            .auth-form-container {
+                background: #fff;
+                padding: 2.5rem 1.75rem;
+                border-radius: 24px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                width: 100%;
+                max-width: 420px;
+                margin: 0 auto;
+                position: relative;
+            }
         }
-        .brand-logo {
+
+        /* =========================================
+           LOGO MOBILE (Khusus di dalam form)
+           ========================================= */
+        .mobile-brand-logo {
             display: flex;
             align-items: center;
-            gap: .75rem;
+            justify-content: center;
+            gap: 0.75rem;
             font-weight: 800;
-            font-size: 1.25rem;
-            letter-spacing: -.02em;
-            margin-bottom: 3rem;
+            font-size: 1.5rem;
+            color: var(--c-deep);
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
         }
-        .brand-logo .logo-mark {
+        .mobile-brand-logo .logo-mark {
             width: 44px; height: 44px;
-            background: rgba(255,255,255,.16);
-            border: 1px solid rgba(255,255,255,.2);
+            background: linear-gradient(135deg, #10b981, #059669);
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-            backdrop-filter: blur(8px);
-        }
-        .brand-side h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -.04em;
-            margin-bottom: 1rem;
-        }
-        .brand-side .lead {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: rgba(255,255,255,.8);
-            margin-bottom: 2rem;
-            max-width: 420px;
-        }
-        .feature-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1rem; }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: .85rem;
-            padding: .85rem 1rem;
-            background: rgba(255,255,255,.07);
-            border: 1px solid rgba(255,255,255,.12);
-            border-radius: var(--r-md);
-            font-size: .875rem;
-            font-weight: 500;
-        }
-        .feature-item .feature-icon {
-            width: 36px; height: 36px;
-            background: rgba(16,185,129,.25);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            color: #a7f3d0;
-        }
-        .brand-footer { font-size: .8rem; color: rgba(255,255,255,.6); }
-
-        /* ===== FORM SIDE ===== */
-        .form-side {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem 1.5rem;
-        }
-        .form-card {
-            width: 100%;
-            max-width: 440px;
-        }
-        .form-card h2 {
-            font-size: 1.65rem;
-            font-weight: 800;
-            letter-spacing: -.03em;
-            margin-bottom: .35rem;
-            color: var(--c-ink);
-        }
-        .form-card .sub {
-            color: var(--c-muted);
-            font-size: .875rem;
-            margin-bottom: 1.75rem;
-        }
-
-        .alert-soft {
-            padding: .85rem 1rem;
-            border-radius: var(--r-sm);
-            font-size: .8125rem;
-            display: flex;
-            align-items: flex-start;
-            gap: .55rem;
-            margin-bottom: 1.25rem;
-        }
-        .alert-soft.alert-success { background: var(--c-soft); color: #065f46; border-left: 3px solid var(--c-primary); }
-        .alert-soft.alert-danger  { background: #fef2f2; color: #991b1b; border-left: 3px solid #dc2626; }
-        .alert-soft.alert-info    { background: #eff6ff; color: #1e40af; border-left: 3px solid #2563eb; }
-
-        .demo-box {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: var(--r-md);
-            background: var(--c-soft);
-            border: 1px solid #d1fae5;
-        }
-        .demo-box .title {
-            font-weight: 700;
-            font-size: .75rem;
-            color: var(--c-primary);
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            margin-bottom: .6rem;
-            display: flex;
-            align-items: center;
-            gap: .35rem;
-        }
-        .demo-box .row-demo {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: .5rem .9rem;
-            font-size: .72rem;
-            color: var(--c-ink-2);
-        }
-        .demo-box .row-demo b { color: var(--c-ink); }
-
-        .link-primary {
-            color: var(--c-primary);
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .link-primary:hover { color: var(--c-primary-dark); text-decoration: underline; }
-
-        @media (max-width: 991px) {
-            .brand-side { display: none; }
-            .form-side { padding: 1.5rem 1.25rem; min-height: auto; align-items: flex-start; padding-top: 2.5rem; padding-bottom: 2.5rem; }
-            .form-card { max-width: 100%; }
-            .form-card h2 { font-size: 1.5rem; }
-        }
-
-        .mobile-brand-top {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: .55rem;
-            font-weight: 800;
-            color: var(--c-deep);
-            font-size: 1.1rem;
-            margin-bottom: 1.75rem;
-            letter-spacing: -.02em;
-        }
-        .mobile-brand-top .logo-mark {
-            width: 38px; height: 38px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-radius: 11px;
-            display: flex; align-items: center; justify-content: center;
             color: #fff;
-            font-size: 1.1rem;
-            box-shadow: 0 6px 18px rgba(16,185,129,.3);
+            font-size: 1.3rem;
+            box-shadow: 0 8px 16px rgba(16,185,129,.3);
         }
-        @media (max-width: 991px) { .mobile-brand-top { display: flex; } }
+
+        /* =========================================
+           STYLING FORM (Sama untuk Desktop & Mobile)
+           ========================================= */
+        .form-label { font-size: .8125rem; font-weight: 600; color: var(--c-ink-2); margin-bottom: 0.4rem; }
+        .form-control {
+            border-radius: var(--r-sm); border: 1px solid var(--c-border);
+            padding: 0.75rem 1rem; font-size: .9375rem; min-height: 48px;
+            transition: all var(--tr); background-color: #f8fafc;
+        }
+        .form-control:focus { border-color: var(--c-primary-light); box-shadow: 0 0 0 4px rgba(16,185,129,.15); background-color: #fff; }
+        
+        .input-group-text {
+            background-color: #f8fafc; border: 1px solid var(--c-border); border-right: none;
+            border-radius: var(--r-sm) 0 0 var(--r-sm); color: var(--c-muted); padding: 0 1rem;
+        }
+        .input-group .form-control { border-left: none; border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+        .input-group:focus-within .input-group-text { border-color: var(--c-primary-light); background-color: #fff; }
+
+        .btn-primary {
+            --bs-btn-bg: var(--c-primary); --bs-btn-border-color: var(--c-primary);
+            --bs-btn-hover-bg: var(--c-primary-dark); --bs-btn-hover-border-color: var(--c-primary-dark);
+            border-radius: var(--r-sm); font-weight: 600; min-height: 48px; transition: all var(--tr);
+            box-shadow: 0 4px 12px rgba(5,150,105,.2);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 16px rgba(5,150,105,.3); }
+
+        .alert-soft { padding: .85rem 1rem; border-radius: var(--r-sm); font-size: .8125rem; display: flex; align-items: flex-start; gap: .55rem; margin-bottom: 1.25rem; }
+        .alert-soft.alert-danger { background: #fef2f2; color: #991b1b; border-left: 3px solid #dc2626; }
     </style>
 </head>
 <body>
-<div class="container-fluid p-0">
-    <div class="row g-0">
-        {{-- BRAND SIDE --}}
-        <div class="col-lg-6 brand-side">
-            <div class="brand-inner">
-                <div>
-                    <div class="brand-logo">
-                        <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
-                        LaporAja
-                    </div>
 
-                    <h1>Laporkan Kerusakan<br>Sekolah dengan Mudah</h1>
-                    <p class="lead">Sistem pengaduan sarana & prasarana SMK Negeri 5 Surakarta.</p>
-
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <span class="feature-icon"><i class="bi bi-camera-fill"></i></span>
-                            <span>Upload foto bukti kerusakan</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon"><i class="bi bi-graph-up-arrow"></i></span>
-                            <span>Tracking status perbaikan real-time</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon"><i class="bi bi-shield-check"></i></span>
-                            <span>Riwayat laporan tersimpan rapi</span>
-                        </div>
-                    </div>
+    <div class="auth-wrapper">
+        {{-- BACKGROUND / GAMBAR SEKOLAH --}}
+        <div class="auth-image-side">
+            <div class="auth-image-content">
+                <a href="{{ route('login') }}" class="brand-logo">
+                    <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
+                    LaporAja
+                </a>
+                
+                <div class="image-text">
+                    <h2>Laporkan Kerusakan<br>Sekolah dengan Mudah.</h2>
+                    <p>Bersama-sama jaga fasilitas sekolah. Sampaikan keluhan sarana dan prasarana secara cepat, transparan, dan terpantau.</p>
                 </div>
 
-                <div class="brand-footer">© {{ date('Y') }} LaporAja — XII RPL C</div>
+                <div style="font-size: 0.85rem; opacity: 0.7;">
+                    &copy; {{ date('Y') }} LaporAja — SMK Negeri 5 Surakarta
+                </div>
             </div>
         </div>
 
-        {{-- FORM SIDE --}}
-        <div class="col-lg-6 form-side">
-            <div class="form-card">
-                <div class="mobile-brand-top">
+        {{-- FORM LOGIN (Kanan di Desktop, Melayang di Mobile) --}}
+        <div class="auth-form-side">
+            <div class="auth-form-container">
+                
+                {{-- LOGO KHUSUS TAMPILAN MOBILE --}}
+                <div class="mobile-brand-logo">
                     <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
                     LaporAja
                 </div>
+
                 @yield('content')
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

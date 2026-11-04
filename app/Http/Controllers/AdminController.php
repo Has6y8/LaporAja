@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Exports\LaporanExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -18,32 +20,30 @@ class AdminController extends Controller
     {
         $rules = [
             'status'  => 'required|in:pending,diproses,selesai,ditolak',
-            'catatan' => 'nullable|string|max:1000',
+            'catatan' => 'required|string|max:1000',
         ];
+        
         if ($request->status === 'selesai') {
             $rules['foto_perbaikan'] = 'required|image|mimes:jpg,jpeg,png|max:5120';
         } else {
             $rules['foto_perbaikan'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
         }
+        
         $data = $request->validate($rules, [
             'foto_perbaikan.required' => 'Foto bukti perbaikan wajib diunggah saat status Selesai.',
+            'catatan.required'        => 'Catatan wajib diisi sebagai informasi untuk pelapor.',
         ]);
         
         $update = [
             'status'        => $data['status'],
             'staff_id'      => auth()->id(),
-            'catatan_staff' => $data['catatan'] ?? null,
+            'catatan_staff' => $data['catatan'],
         ];
         
         if ($request->hasFile('foto_perbaikan')) {
             $image = $request->file('foto_perbaikan');
-            
-            // Kompresi + Base64
             $manager = new ImageManager(new Driver());
-            $compressedImage = $manager->read($image)
-                ->scaleDown(width: 800)
-                ->toJpeg(60);
-
+            $compressedImage = $manager->read($image)->scaleDown(width: 800)->toJpeg(60);
             $update['foto_perbaikan'] = 'data:image/jpeg;base64,' . base64_encode((string) $compressedImage);
         }
         
@@ -53,10 +53,15 @@ class AdminController extends Controller
             'laporan_id' => $laporan->id,
             'user_id'    => auth()->id(),
             'status'     => $data['status'],
-            'keterangan' => $data['catatan'] ?? 'Status diperbarui.',
+            'keterangan' => $data['catatan'],
         ]);
         
         return back()->with('success', 'Status laporan berhasil diperbarui.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new LaporanExport, 'Rekap_Laporan_LaporAja_' . date('Ymd_His') . '.xlsx');
     }
 
     public function komplainIndex()
@@ -86,11 +91,8 @@ class AdminController extends Controller
         } elseif ($data['aksi'] === 'hapus_laporan') {
             $laporan = $komplain->laporan;
             if ($laporan) {
-                // Hapus relasi terlebih dahulu
                 $laporan->komplains()->delete();
                 $laporan->statusLogs()->delete();
-                
-                // Hapus laporan (Base64 di database otomatis terhapus)
                 $laporan->delete();
             }
             return back()->with('success', 'Laporan berhasil dihapus permanen.');
@@ -101,7 +103,6 @@ class AdminController extends Controller
 
     public function userIndex()
     {
-        // Super Admin disembunyikan dari daftar
         $users = User::where('role', '!=', 'super_admin')->latest()->get();
         return view('admin.users', compact('users'));
     }
@@ -112,7 +113,7 @@ class AdminController extends Controller
             'name'       => 'required|string|max:100',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-            'role'       => 'required|in:user,staff,admin', // Super admin tidak bisa dibuat
+            'role'       => 'required|in:user,staff,admin',
             'tipe_user'  => 'nullable|in:siswa,guru',
             'nisn_nip'   => 'nullable|string',
             'kelas'      => 'nullable|string',
@@ -131,7 +132,6 @@ class AdminController extends Controller
             $data['tipe_user'] = null;
             $data['kelas']     = null;
         } else {
-            // Admin yang dibuat langsung aktif
             $data['status_akun'] = 'approved'; 
             $data['is_approved'] = true;
             $data['tipe_user'] = null;
@@ -145,7 +145,6 @@ class AdminController extends Controller
 
     public function userUpdate(Request $request, User $user)
     {
-        // Mencegah Admin mengedit Super Admin yang tersembunyi
         if ($user->role === 'super_admin') {
             return back()->with('error', 'Akun Super Admin tidak dapat diedit.');
         }

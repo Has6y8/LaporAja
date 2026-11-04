@@ -53,19 +53,20 @@ Route::middleware('auth')->group(function () {
         Route::put('/staff/laporan/{laporan}/status', [StaffController::class, 'updateStatus'])->name('staff.updateStatus');
     });
 
-    // ===== ADMIN & SUPER ADMIN (Digabung) =====
+    // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
         Route::put('/admin/laporan/{laporan}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
+        
+        // Rute Export Excel
+        Route::get('/admin/export-excel', [AdminController::class, 'exportExcel'])->name('admin.export');
 
-        // Kelola user (Sekarang bebas diakses Admin)
         Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
         Route::post('/admin/users', [AdminController::class, 'userStore'])->name('admin.users.store');
         Route::put('/admin/users/{user}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
         Route::delete('/admin/users/{user}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
         
-        // Fitur Super Admin (Approvals) dipindah ke Admin
         Route::get('/admin/approvals',      [SuperAdminController::class, 'approvals'])->name('super.approvals');
         Route::put('/admin/approve/{user}', [SuperAdminController::class, 'approve'])->name('super.approve');
         Route::put('/admin/reject/{user}',  [SuperAdminController::class, 'reject'])->name('super.reject');
