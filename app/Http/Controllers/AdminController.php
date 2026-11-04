@@ -61,7 +61,12 @@ class AdminController extends Controller
 
     public function exportExcel()
     {
-        return Excel::download(new LaporanExport, 'Rekap_Laporan_LaporAja_' . date('Ymd_His') . '.xlsx');
+        // Mengubah format download menjadi CSV
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new LaporanExport, 
+            'Rekap_Laporan_LaporAja_' . date('Ymd_His') . '.csv', 
+            \Maatwebsite\Excel\Excel::CSV
+        );
     }
 
     public function komplainIndex()

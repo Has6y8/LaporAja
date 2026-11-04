@@ -7,14 +7,12 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings; // Tambahan untuk CSV
 
-class LaporanExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class LaporanExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithCustomCsvSettings
 {
     public function collection()
     {
-        // Tambahkan 'staff' ke dalam with() agar sistem mengambil data penanggung jawab
         return Laporan::with(['user', 'staff'])->latest()->get();
     }
 
@@ -28,14 +26,13 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping, Should
             'Lokasi',
             'Deskripsi Kerusakan',
             'Status',
-            'Ditangani Oleh', // Kolom Baru
+            'Ditangani Oleh',
             'Catatan Petugas',
         ];
     }
 
     public function map($laporan): array
     {
-        // Logika untuk mengambil Nama dan Jabatan Penanggung Jawab
         $penanggungJawab = '-';
         if ($laporan->staff) {
             $jabatan = $laporan->staff->jabatan ?? $laporan->staff->roleLabel();
@@ -50,35 +47,17 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping, Should
             $laporan->lokasi,
             $laporan->deskripsi,
             strtoupper($laporan->status),
-            $penanggungJawab, // Data Penanggung Jawab
+            $penanggungJawab,
             $laporan->catatan_staff ?? '-',
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    // Pengaturan Format CSV
+    public function getCsvSettings(): array
     {
-        // Mendapatkan kolom terakhir secara otomatis (misal: 'I')
-        $lastColumn = $sheet->getHighestColumn();
-        $lastRow = $sheet->getHighestRow();
-
         return [
-            // Baris pertama (header) diberi warna hijau, teks putih, dan tebal
-            1 => [
-                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                'fill' => [
-                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '059669'] // Warna hijau LaporAja
-                ],
-            ],
-            // Mengatur format bingkai secara otomatis dari kolom A sampai kolom terakhir
-            'A1:' . $lastColumn . $lastRow => [
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        'color' => ['rgb' => 'E2E8F0'],
-                    ],
-                ],
-            ],
+            'delimiter' => ';', // Pakai titik koma agar langsung rapi di Excel (Regional Indonesia)
+            'use_bom' => true,  // Agar karakter khusus (seperti emoji) tidak rusak
         ];
     }
 }

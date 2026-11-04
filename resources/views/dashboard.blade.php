@@ -23,10 +23,10 @@
     </div>
     
     <div class="d-flex gap-2 flex-wrap">
-        {{-- TOMBOL EXPORT EXCEL --}}
+        {{-- TOMBOL EXPORT CSV --}}
         @if($user->isAdmin() || $user->isStaff())
             <a href="{{ route('admin.export') }}" class="btn btn-light fw-bold" style="color:#059669; border-color:#059669;">
-                <i class="bi bi-file-earmark-excel-fill me-1"></i> Export Excel
+                <i class="bi bi-filetype-csv me-1"></i> Export CSV
             </a>
         @endif
 
