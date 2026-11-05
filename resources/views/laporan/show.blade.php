@@ -6,6 +6,8 @@
 
 @php
     $user = auth()->user();
+    // Cek apakah butuh kolom kanan (Staff untuk update, User untuk buat komplain)
+    $butuhSidebarKanan = $user->isStaff() || $user->isUser();
 @endphp
 
 <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -19,8 +21,8 @@
 </div>
 
 <div class="row g-4">
-    {{-- KIRI: KONTEN UTAMA --}}
-    <div class="col-lg-8">
+    {{-- KIRI: KONTEN UTAMA (Lebar menyesuaikan role) --}}
+    <div class="{{ $butuhSidebarKanan ? 'col-lg-8' : 'col-lg-12' }}">
         <!-- Kartu Info -->
         <div class="card mb-4">
             <div class="card-body p-4">
@@ -118,7 +120,7 @@
             </div>
         @endif
 
-        <!-- TIMELINE MINIMALIS (METODE FIX) -->
+        <!-- TIMELINE MINIMALIS -->
         <div class="card">
             <div class="card-header bg-transparent border-0 pt-4 px-4">
                 <h6 class="fw-bold mb-0">Riwayat Status</h6>
@@ -170,13 +172,14 @@
         </div>
     </div>
 
-    {{-- KANAN: PANEL AKSI --}}
+    {{-- KANAN: PANEL AKSI (Hanya dirender jika Staff / User) --}}
+    @if($butuhSidebarKanan)
     <div class="col-lg-4">
-        @if($user->isAdmin() || $user->isStaff())
+        @if($user->isStaff())
             <div class="card mb-4">
                 <div class="card-body p-4">
                     <h6 class="fw-bold mb-4">Update Progres</h6>
-                    <form method="POST" action="{{ route($user->isStaff() ? 'staff.updateStatus' : 'admin.updateStatus', $laporan) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('staff.updateStatus', $laporan) }}" enctype="multipart/form-data">
                         @csrf @method('PUT')
                         
                         <div class="mb-3">
@@ -223,6 +226,7 @@
             </div>
         @endif
     </div>
+    @endif
 </div>
 
 @endsection

@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // Detail laporan (semua role)
     Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
 
-    // ===== STAFF =====
+    // ===== STAFF (Hanya Staff yang bisa ubah status) =====
     Route::middleware('role:staff')->group(function () {
         Route::get('/staff/laporan', [StaffController::class, 'index'])->name('staff.laporan');
         Route::put('/staff/laporan/{laporan}/status', [StaffController::class, 'updateStatus'])->name('staff.updateStatus');
@@ -55,11 +55,10 @@ Route::middleware('auth')->group(function () {
 
     // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
-        Route::put('/admin/laporan/{laporan}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
+        // Rute admin.updateStatus SUDAH DIHAPUS
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
         
-        // Rute Export Excel
         Route::get('/admin/export-excel', [AdminController::class, 'exportExcel'])->name('admin.export');
 
         Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users');
@@ -73,7 +72,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Rute gambar (jika masih dipakai)
+// Rute gambar
 Route::get('/storage/{path}', function ($path) {
     $filePath = storage_path('app/public/' . $path);
     if (!File::exists($filePath)) { abort(404); }

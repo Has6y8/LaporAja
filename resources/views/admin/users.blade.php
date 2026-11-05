@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            {{-- MODAL EDIT --}}
+            {{-- MODAL EDIT USER --}}
             <div class="modal fade" id="editUser{{ $u->id }}" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <form method="POST" action="{{ route('admin.users.update', $u->id) }}">
@@ -123,8 +123,8 @@
                                 <div id="form-siswa-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label">NISN</label>
-                                            <input type="text" name="nisn_nip" class="form-control input-siswa" value="{{ $u->nisn_nip }}">
+                                            <label class="form-label">NISN <span class="text-danger">*</span></label>
+                                            <input type="text" name="nisn_nip" class="form-control input-siswa" value="{{ $u->nisn_nip }}" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Kelas</label>
@@ -136,8 +136,8 @@
                                 <div id="form-guru-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label">NIP</label>
-                                            <input type="text" name="nisn_nip" class="form-control input-guru" value="{{ $u->nisn_nip }}">
+                                            <label class="form-label">NIP <span class="text-danger">*</span></label>
+                                            <input type="text" name="nisn_nip" class="form-control input-guru" value="{{ $u->nisn_nip }}" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Jabatan</label>
@@ -149,8 +149,8 @@
                                 <div id="form-pegawai-{{ $u->id }}" class="dynamic-form">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label">NIP Pegawai</label>
-                                            <input type="text" name="nisn_nip" class="form-control input-pegawai" value="{{ $u->nisn_nip }}">
+                                            <label class="form-label">NIP Pegawai <span class="text-danger">*</span></label>
+                                            <input type="text" name="nisn_nip" class="form-control input-pegawai" value="{{ $u->nisn_nip }}" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Jabatan</label>
@@ -237,8 +237,8 @@
                     <div id="form-siswa-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">NISN</label>
-                                <input type="text" name="nisn_nip" class="form-control input-siswa">
+                                <label class="form-label">NISN <span class="text-danger">*</span></label>
+                                <input type="text" name="nisn_nip" class="form-control input-siswa" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Kelas</label>
@@ -250,8 +250,8 @@
                     <div id="form-guru-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">NIP</label>
-                                <input type="text" name="nisn_nip" class="form-control input-guru">
+                                <label class="form-label">NIP <span class="text-danger">*</span></label>
+                                <input type="text" name="nisn_nip" class="form-control input-guru" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Jabatan</label>
@@ -263,8 +263,8 @@
                     <div id="form-pegawai-add" class="dynamic-form">
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">NIP Pegawai</label>
-                                <input type="text" name="nisn_nip" class="form-control input-pegawai">
+                                <label class="form-label">NIP Pegawai <span class="text-danger">*</span></label>
+                                <input type="text" name="nisn_nip" class="form-control input-pegawai" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Jabatan</label>
@@ -307,7 +307,10 @@
         const wrapStatus = document.getElementById('wrap-status-' + prefix);
 
         document.querySelectorAll(`#form-siswa-${prefix}, #form-guru-${prefix}, #form-pegawai-${prefix}`).forEach(el => el.style.display = 'none');
-        document.querySelectorAll(`#form-siswa-${prefix} input, #form-guru-${prefix} input, #form-pegawai-${prefix} input`).forEach(i => i.disabled = true);
+        document.querySelectorAll(`#form-siswa-${prefix} input, #form-guru-${prefix} input, #form-pegawai-${prefix} input`).forEach(i => {
+            i.disabled = true;
+            i.required = false; // Matikan required jika form disembunyikan
+        });
 
         if (role === 'user') {
             if (wrapTipe) wrapTipe.style.display = 'block';
@@ -315,21 +318,33 @@
             const tipe = document.getElementById('tipe-' + prefix).value;
             if (tipe === 'siswa') {
                 document.getElementById(`form-siswa-${prefix}`).style.display = 'block';
-                document.querySelectorAll(`#form-siswa-${prefix} input`).forEach(i => i.disabled = false);
+                document.querySelectorAll(`#form-siswa-${prefix} input`).forEach(i => {
+                    i.disabled = false;
+                    if (i.name === 'nisn_nip') i.required = true; // NISN wajib
+                });
             } else {
                 document.getElementById(`form-guru-${prefix}`).style.display = 'block';
-                document.querySelectorAll(`#form-guru-${prefix} input`).forEach(i => i.disabled = false);
+                document.querySelectorAll(`#form-guru-${prefix} input`).forEach(i => {
+                    i.disabled = false;
+                    if (i.name === 'nisn_nip') i.required = true; // NIP wajib
+                });
             }
         } else if (role === 'staff') {
             if (wrapTipe) wrapTipe.style.display = 'none';
             if (wrapStatus) wrapStatus.style.display = 'none';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
-            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => i.disabled = false);
+            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => {
+                i.disabled = false;
+                if (i.name === 'nisn_nip') i.required = true; // NIP Pegawai wajib
+            });
         } else if (role === 'admin') {
             if (wrapTipe) wrapTipe.style.display = 'none';
             if (wrapStatus) wrapStatus.style.display = 'block';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
-            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => i.disabled = false);
+            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => {
+                i.disabled = false;
+                if (i.name === 'nisn_nip') i.required = true; // NIP Pegawai wajib
+            });
         } else {
             if (wrapTipe) wrapTipe.style.display = 'none';
             if (wrapStatus) wrapStatus.style.display = 'block';

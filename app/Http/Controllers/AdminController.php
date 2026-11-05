@@ -9,64 +9,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use App\Exports\LaporanExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
-    public function updateStatus(Request $request, Laporan $laporan)
-    {
-        $rules = [
-            'status'  => 'required|in:pending,diproses,selesai,ditolak',
-            'catatan' => 'required|string|max:1000',
-        ];
-        
-        if ($request->status === 'selesai') {
-            $rules['foto_perbaikan'] = 'required|image|mimes:jpg,jpeg,png|max:5120';
-        } else {
-            $rules['foto_perbaikan'] = 'nullable|image|mimes:jpg,jpeg,png|max:5120';
-        }
-        
-        $data = $request->validate($rules, [
-            'foto_perbaikan.required' => 'Foto bukti perbaikan wajib diunggah saat status Selesai.',
-            'catatan.required'        => 'Catatan wajib diisi sebagai informasi untuk pelapor.',
-        ]);
-        
-        $update = [
-            'status'        => $data['status'],
-            'staff_id'      => auth()->id(),
-            'catatan_staff' => $data['catatan'],
-        ];
-        
-        if ($request->hasFile('foto_perbaikan')) {
-            $image = $request->file('foto_perbaikan');
-            $manager = new ImageManager(new Driver());
-            $compressedImage = $manager->read($image)->scaleDown(width: 800)->toJpeg(60);
-            $update['foto_perbaikan'] = 'data:image/jpeg;base64,' . base64_encode((string) $compressedImage);
-        }
-        
-        $laporan->update($update);
-        
-        StatusLaporan::create([
-            'laporan_id' => $laporan->id,
-            'user_id'    => auth()->id(),
-            'status'     => $data['status'],
-            'keterangan' => $data['catatan'],
-        ]);
-        
-        return back()->with('success', 'Status laporan berhasil diperbarui.');
-    }
-
     public function exportExcel()
     {
-        // Mengubah format download menjadi CSV
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new LaporanExport, 
-            'Rekap_Laporan_LaporAja_' . date('Ymd_His') . '.csv', 
-            \Maatwebsite\Excel\Excel::CSV
-        );
+        return Excel::download(new LaporanExport, 'Rekap_Laporan_LaporAja_' . date('Ymd_His') . '.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function komplainIndex()
@@ -120,10 +70,14 @@ class AdminController extends Controller
             'password'   => 'required|min:6',
             'role'       => 'required|in:user,staff,admin',
             'tipe_user'  => 'nullable|in:siswa,guru',
-            'nisn_nip'   => 'nullable|string',
+            // NISN/NIP sekarang WAJIB dan UNIQUE (tidak boleh ada yang sama)
+            'nisn_nip'   => 'required|string|unique:users,nisn_nip', 
             'kelas'      => 'nullable|string',
             'jabatan'    => 'nullable|string',
             'no_telepon' => 'nullable|string',
+        ], [
+            'nisn_nip.required' => 'NISN / NIP wajib diisi.',
+            'nisn_nip.unique'   => 'NISN / NIP ini sudah terdaftar di sistem.',
         ]);
 
         $data['password'] = Hash::make($data['password']);
@@ -159,11 +113,15 @@ class AdminController extends Controller
             'email'       => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'role'        => 'required|in:user,staff,admin',
             'tipe_user'   => 'nullable|in:siswa,guru',
-            'nisn_nip'    => 'nullable|string',
+            // NISN/NIP WAJIB diisi, dan mengabaikan ID user saat ini agar tidak error saat edit data dirinya sendiri
+            'nisn_nip'    => ['required', 'string', Rule::unique('users')->ignore($user->id)],
             'kelas'       => 'nullable|string',
             'jabatan'     => 'nullable|string',
             'no_telepon'  => 'nullable|string',
             'status_akun' => 'required|in:pending,approved,rejected',
+        ], [
+            'nisn_nip.required' => 'NISN / NIP wajib diisi.',
+            'nisn_nip.unique'   => 'NISN / NIP ini sudah terdaftar di sistem.',
         ]);
 
         if ($data['role'] === 'user') {
