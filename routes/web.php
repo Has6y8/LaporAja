@@ -13,12 +13,22 @@ use App\Http\Controllers\{
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 
-Route::get('/', fn() => redirect()->route('login'));
+// ============ LANDING PAGE ============
+Route::get('/', function () {
+    $recentReports = \App\Models\Laporan::with('user')->latest()->take(4)->get();
+    return view('welcome', compact('recentReports'));
+})->name('landing');
 
 // ============ AUTH ============
 Route::get('/login',    [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login',   [AuthController::class, 'login']);
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
+
+// Fitur Cek Akun & Register
+Route::get('/check-account', [AuthController::class, 'showCheckAccount'])->name('check-account');
+Route::post('/check-account', [AuthController::class, 'processCheckAccount'])->name('check-account.process');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 
 // ============ LOGIN REQUIRED ============
 Route::middleware('auth')->group(function () {
@@ -47,7 +57,14 @@ Route::middleware('auth')->group(function () {
     // Detail laporan (semua role)
     Route::get('/laporan/{laporan}', [LaporanController::class, 'show'])->name('laporan.show');
 
-    // ===== STAFF (Hanya Staff yang bisa ubah status) =====
+    // ===== PANDUAN (User & Staff) =====
+    Route::middleware('role:user,staff')->group(function () {
+        Route::get('/panduan', function () {
+            return view('panduan.index');
+        })->name('panduan');
+    });
+
+    // ===== STAFF =====
     Route::middleware('role:staff')->group(function () {
         Route::get('/staff/laporan', [StaffController::class, 'index'])->name('staff.laporan');
         Route::put('/staff/laporan/{laporan}/status', [StaffController::class, 'updateStatus'])->name('staff.updateStatus');
@@ -55,7 +72,7 @@ Route::middleware('auth')->group(function () {
 
     // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
-        // Rute admin.updateStatus SUDAH DIHAPUS
+        // Update status laporan khusus Admin sudah dihapus (hanya Staff yang bisa)
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
         
@@ -72,7 +89,7 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Rute gambar
+// ============ RUTE GAMBAR (Storage) ============
 Route::get('/storage/{path}', function ($path) {
     $filePath = storage_path('app/public/' . $path);
     if (!File::exists($filePath)) { abort(404); }

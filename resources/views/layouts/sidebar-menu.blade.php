@@ -35,6 +35,15 @@
         </li>
     @endif
 
+    {{-- MENU PANDUAN (Khusus User & Staff) --}}
+    @if($user->isUser() || $user->isStaff())
+        <li>
+            <a href="{{ route('panduan') }}" class="menu-item {{ request()->routeIs('panduan') ? 'active' : '' }}">
+                <i class="bi bi-book-half"></i> Panduan Penggunaan
+            </a>
+        </li>
+    @endif
+
     <li>
         <a href="{{ route('histori') }}" class="menu-item {{ request()->routeIs('histori') ? 'active' : '' }}">
             <i class="bi bi-clock-history"></i> Histori
@@ -46,7 +55,7 @@
         </a>
     </li>
 
-    {{-- MENU ADMIN (Super Admin telah digabung ke sini) --}}
+    {{-- MENU ADMIN --}}
     @if($user->isAdmin())
         <li class="menu-label mt-2">Admin</li>
 
@@ -55,13 +64,11 @@
                 <i class="bi bi-chat-square-text-fill"></i> Komplain Masuk
             </a>
         </li>
-
         <li>
             <a href="{{ route('admin.users') }}" class="menu-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                 <i class="bi bi-people-fill"></i> Kelola User
             </a>
         </li>
-
         <li>
             <a href="{{ route('super.approvals') }}" class="menu-item {{ request()->routeIs('super.approvals') ? 'active' : '' }}">
                 <i class="bi bi-person-check-fill"></i> Pengajuan Akun

@@ -42,7 +42,6 @@
             --tr: 200ms cubic-bezier(.4,0,.2,1);
             
             --sidebar-w: 280px;
-            --bottom-nav-h: 72px;
         }
 
         * { font-family: 'Inter', -apple-system, system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -113,7 +112,7 @@
         .status-selesai  { background: #d1fae5; color: #047857; }
         .status-ditolak  { background: #fee2e2; color: #b91c1c; }
 
-        /* ========== ALERTS (Untuk halaman yang pakai alert-soft) ========== */
+        /* ========== ALERTS ========== */
         .alert-soft { padding: .85rem 1rem; border-radius: var(--r-sm); font-size: .8125rem; display: flex; align-items: flex-start; gap: .55rem; margin-bottom: 1.25rem; }
         .alert-soft.alert-success { background: var(--c-soft); color: #065f46; border-left: 3px solid var(--c-primary); }
         .alert-soft.alert-danger  { background: #fef2f2; color: #991b1b; border-left: 3px solid #dc2626; }
@@ -151,24 +150,19 @@
         .app-main { margin-left: var(--sidebar-w); padding: 2.5rem; min-height: 100vh; }
         .content-wrap { max-width: 1100px; margin: 0 auto; }
 
-        /* ========== MOBILE HEADER & BOTTOM NAV ========== */
+        /* ========== MOBILE HEADER ========== */
         .mobile-header { display: none; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); padding: .85rem 1.25rem; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid var(--c-border); align-items: center; justify-content: space-between; }
         .mobile-brand { font-weight: 800; font-size: 1.15rem; color: var(--c-deep); text-decoration: none; display: flex; align-items: center; gap: .5rem; letter-spacing: -.02em; }
         .mobile-brand .brand-icon-sm { width: 34px; height: 34px; background: #10b981; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; }
-        
-        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h); background: rgba(255,255,255,.98); backdrop-filter: blur(10px); border-top: 1px solid var(--c-border); z-index: 900; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -4px 20px rgba(15,23,42,.05); }
-        .bottom-nav-inner { display: flex; height: var(--bottom-nav-h); align-items: stretch; max-width: 640px; margin: 0 auto; }
-        .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--c-muted); text-decoration: none; font-size: .7rem; font-weight: 700; transition: color var(--tr); position: relative; }
-        .bottom-nav-item i { font-size: 1.35rem; line-height: 1; }
-        .bottom-nav-item.active { color: var(--c-primary); }
-        .bottom-nav-item.center-btn i { background: #10b981; color: #fff; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(16,185,129,.4); margin-top: -24px; border: 4px solid #fff; }
+        .icon-btn { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; color: var(--c-ink-2); font-size: 1.5rem; border-radius: var(--r-sm); border: none; background: transparent; transition: all var(--tr); }
+        .icon-btn:active { background: var(--c-soft); }
 
         /* ========== PAGE HEADER ========== */
         .page-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; }
         .page-header h4 { font-weight: 800; font-size: 1.75rem; margin: 0 0 .35rem; letter-spacing: -.04em; color: var(--c-deep); }
         .page-header p { margin: 0; color: var(--c-muted); font-size: .95rem; }
 
-        /* ========== LIST LAPORAN (Untuk Histori & Staff) ========== */
+        /* ========== LIST LAPORAN ========== */
         .laporan-item { display: flex; gap: 1.25rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--c-border); text-decoration: none; color: inherit; transition: background var(--tr); align-items: center; }
         .laporan-item:last-child { border-bottom: none; }
         .laporan-item:hover { background: var(--c-soft); color: inherit; }
@@ -178,14 +172,14 @@
         .laporan-meta { font-size: .78rem; color: var(--c-muted); display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: .5rem; }
         .laporan-meta i { font-size: .78rem; margin-right: .3rem; }
 
-        /* ========== STAT CARD (Untuk Dashboard Admin/Lama) ========== */
+        /* ========== STAT CARD ========== */
         .stat-card { border: 1px solid var(--c-border); border-radius: var(--r-md); transition: all var(--tr); background: #fff; height: 100%; }
         .stat-card:hover { transform: translateY(-2px); box-shadow: var(--sh-md); border-color: var(--c-soft-2); }
         .stat-card .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
         .stat-card .stat-value { font-size: 1.5rem; font-weight: 800; line-height: 1; letter-spacing: -.03em; }
         .stat-card .stat-label { font-size: .78rem; color: var(--c-muted); margin-top: .3rem; font-weight: 500; }
 
-        /* ========== EMPTY STATE (Untuk Histori, Komplain, Approvals) ========== */
+        /* ========== EMPTY STATE ========== */
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--c-muted); }
         .empty-state .empty-icon { width: 72px; height: 72px; background: var(--c-soft); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--c-primary); margin-bottom: 1rem; }
         .empty-state .empty-title { font-weight: 600; color: var(--c-ink-2); margin-bottom: .35rem; font-size: .95rem; }
@@ -208,13 +202,14 @@
         .modal-body { padding: 1.5rem; }
         .modal-footer { border-top: 1px solid var(--c-border); padding: 1.25rem 1.5rem; gap: .75rem; }
 
-        /* ========== RESPONSIVE ========== */
+        /* ========== RESPONSIVE (TANPA BOTTOM NAV) ========== */
         @media (max-width: 991px) {
             .app-sidebar { transform: translateX(-100%); }
             body.drawer-open .app-sidebar { transform: translateX(0); }
-            .app-main { margin-left: 0; padding: 1.25rem; padding-bottom: calc(var(--bottom-nav-h) + 2rem); }
+            
+            /* Padding bottom disesuaikan karena tidak ada Bottom Nav lagi */
+            .app-main { margin-left: 0; padding: 1.25rem; padding-bottom: 2rem; }
             .mobile-header { display: flex; }
-            .bottom-nav { display: block; }
             .page-header h4 { font-size: 1.5rem; }
             .card-body { padding: 1.25rem; }
             .laporan-item { padding: 1rem 1.25rem; gap: 1rem; }
@@ -245,7 +240,7 @@
 
 {{-- MOBILE HEADER --}}
 <div class="mobile-header">
-    <button class="icon-btn" onclick="toggleDrawer()" style="background:transparent;border:none;font-size:1.5rem;color:var(--c-ink-2);">
+    <button class="icon-btn" onclick="toggleDrawer()" aria-label="Menu">
         <i class="bi bi-list"></i>
     </button>
     <a href="{{ route('dashboard') }}" class="mobile-brand">
@@ -292,49 +287,6 @@
         @yield('content')
     </div>
 </main>
-
-{{-- BOTTOM NAV --}}
-@php $user = auth()->user(); @endphp
-<nav class="bottom-nav">
-    <div class="bottom-nav-inner">
-        <a href="{{ route('dashboard') }}" class="bottom-nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <i class="bi bi-house-door-fill"></i>
-            <span>Home</span>
-        </a>
-
-        @if($user->isUser())
-            <a href="{{ route('laporan.create') }}" class="bottom-nav-item center-btn {{ request()->routeIs('laporan.create') ? 'active' : '' }}">
-                <i class="bi bi-plus-lg"></i>
-                <span style="margin-top:4px;color:var(--c-primary);font-weight:800;">Lapor</span>
-            </a>
-            <a href="{{ route('komplain.index') }}" class="bottom-nav-item {{ request()->routeIs('komplain.*') ? 'active' : '' }}">
-                <i class="bi bi-chat-dots-fill"></i>
-                <span>Komplain</span>
-            </a>
-        @elseif($user->isStaff())
-            <a href="{{ route('staff.laporan') }}" class="bottom-nav-item {{ request()->routeIs('staff.*') ? 'active' : '' }}">
-                <i class="bi bi-list-check"></i>
-                <span>Tugas</span>
-            </a>
-        @else
-            <a href="{{ route('admin.komplain') }}" class="bottom-nav-item {{ request()->routeIs('admin.komplain') ? 'active' : '' }}">
-                <i class="bi bi-chat-square-text-fill"></i>
-                <span>Komplain</span>
-            </a>
-            @if($user->isAdmin())
-                <a href="{{ route('admin.users') }}" class="bottom-nav-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Users</span>
-                </a>
-            @endif
-        @endif
-
-        <a href="{{ route('profile.index') }}" class="bottom-nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-            <i class="bi bi-person-fill"></i>
-            <span>Profil</span>
-        </a>
-    </div>
-</nav>
 
 {{-- TOAST WRAP --}}
 <div class="toast-wrap" id="toastWrap"></div>

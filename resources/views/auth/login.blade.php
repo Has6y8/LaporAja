@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-5">
     <h3 class="fw-bold mb-2" style="letter-spacing:-.03em; color:var(--c-ink);">Selamat Datang Kembali 👋</h3>
-    <p class="text-secondary small mb-0">Silakan masuk menggunakan akun sekolah yang sudah diberikan.</p>
+    <p class="text-secondary small mb-0">Silakan masuk menggunakan akun sekolah Anda.</p>
 </div>
 
 @if(session('success'))
@@ -52,8 +52,11 @@
 </form>
 
 <div class="text-center mt-4">
-    <p class="text-secondary" style="font-size: 0.8rem;">
-        Belum punya akun? Silakan hubungi <strong>Admin Sekolah</strong> untuk pendaftaran.
+    <p class="text-secondary" style="font-size: 0.85rem;">
+        Belum punya akun? 
+        <a href="{{ route('check-account') }}" class="text-decoration-none fw-bold" style="color:var(--c-primary);">
+            Cek Status Akun
+        </a>
     </p>
 </div>
 @endsection
