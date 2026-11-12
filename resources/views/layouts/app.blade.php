@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#059669">
     <title>@yield('title') — LaporAja</title>
+    
+    <!-- Favicon (Diubah ke favicon.png) -->
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,8 +129,14 @@
             border-right: 1px solid rgba(255,255,255,.05); transition: transform 300ms cubic-bezier(.4,0,.2,1);
         }
         .sidebar-inner { padding: 1.5rem; display: flex; flex-direction: column; min-height: 100%; }
+        
+        /* Logo Sidebar */
         .sidebar-brand { display: flex; align-items: center; gap: .75rem; font-weight: 800; font-size: 1.35rem; color: #fff; padding: .5rem .5rem 1.5rem; text-decoration: none; letter-spacing: -.03em; }
-        .sidebar-brand .brand-icon { width: 42px; height: 42px; background: #10b981; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; box-shadow: 0 8px 20px rgba(16,185,129,.4); }
+        .sidebar-brand img { 
+            height: 42px; 
+            width: auto; 
+            filter: brightness(0) invert(1); /* Membuat logo menjadi putih bersih */
+        }
 
         .sidebar-user { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-md); padding: 1rem; display: flex; align-items: center; gap: .85rem; margin-bottom: 2rem; }
         .user-avatar { width: 46px; height: 46px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
@@ -153,7 +162,6 @@
         /* ========== MOBILE HEADER ========== */
         .mobile-header { display: none; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); padding: .85rem 1.25rem; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid var(--c-border); align-items: center; justify-content: space-between; }
         .mobile-brand { font-weight: 800; font-size: 1.15rem; color: var(--c-deep); text-decoration: none; display: flex; align-items: center; gap: .5rem; letter-spacing: -.02em; }
-        .mobile-brand .brand-icon-sm { width: 34px; height: 34px; background: #10b981; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; }
         .icon-btn { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; color: var(--c-ink-2); font-size: 1.5rem; border-radius: var(--r-sm); border: none; background: transparent; transition: all var(--tr); }
         .icon-btn:active { background: var(--c-soft); }
 
@@ -206,8 +214,6 @@
         @media (max-width: 991px) {
             .app-sidebar { transform: translateX(-100%); }
             body.drawer-open .app-sidebar { transform: translateX(0); }
-            
-            /* Padding bottom disesuaikan karena tidak ada Bottom Nav lagi */
             .app-main { margin-left: 0; padding: 1.25rem; padding-bottom: 2rem; }
             .mobile-header { display: flex; }
             .page-header h4 { font-size: 1.5rem; }
@@ -244,8 +250,7 @@
         <i class="bi bi-list"></i>
     </button>
     <a href="{{ route('dashboard') }}" class="mobile-brand">
-        <span class="brand-icon-sm"><i class="bi bi-megaphone-fill"></i></span>
-        LaporAja
+        <img src="{{ asset('images/logo.png') }}" alt="LaporAja" style="height: 32px; width: auto;">
     </a>
     <a href="{{ route('profile.index') }}" style="color:var(--c-ink-2);font-size:1.3rem;">
         <i class="bi bi-person-circle"></i>
@@ -256,8 +261,7 @@
 <aside class="app-sidebar">
     <div class="sidebar-inner">
         <a href="{{ route('dashboard') }}" class="sidebar-brand">
-            <span class="brand-icon"><i class="bi bi-megaphone-fill"></i></span>
-            LaporAja
+            <img src="{{ asset('images/logo.png') }}" alt="LaporAja">
         </a>
 
         <div class="sidebar-user">

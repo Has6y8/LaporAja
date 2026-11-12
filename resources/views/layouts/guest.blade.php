@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#059669">
     <title>@yield('title') — LaporAja</title>
+    
+    <!-- Favicon (Diubah ke favicon.png) -->
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,13 +37,9 @@
 
         .auth-wrapper { display: flex; min-height: 100vh; width: 100%; position: relative; }
         
-        /* =========================================
-           DESKTOP VIEW (Kiri Gambar, Kanan Form)
-           ========================================= */
         @media (min-width: 992px) {
             .auth-image-side {
                 width: 50%;
-                /* GAMBAR SEKOLAH (DESKTOP) */
                 background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReSw_vM67L7OxWZt3L59-G27v-_L0i_7IhHkwaFDeK7w&s=10');
                 background-size: cover;
                 background-position: center;
@@ -48,7 +47,6 @@
                 display: flex;
             }
 
-            /* Overlay warna hijau transparan */
             .auth-image-side::before {
                 content: '';
                 position: absolute; inset: 0;
@@ -62,7 +60,11 @@
             }
 
             .brand-logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 800; font-size: 1.5rem; color: #fff; text-decoration: none; }
-            .brand-logo .logo-mark { width: 44px; height: 44px; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+            .brand-logo img { 
+                height: 45px; 
+                width: auto; 
+                filter: brightness(0) invert(1);
+            }
             
             .image-text h2 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -0.03em; }
             .image-text p { font-size: 1.1rem; opacity: 0.9; max-width: 480px; line-height: 1.6; }
@@ -80,9 +82,6 @@
             .mobile-brand-logo { display: none !important; }
         }
 
-        /* =========================================
-           MOBILE VIEW (Gambar Full Background)
-           ========================================= */
         @media (max-width: 991px) {
             .auth-wrapper {
                 align-items: center;
@@ -96,7 +95,6 @@
                 width: 100%;
                 height: 100vh;
                 z-index: -1;
-                /* GAMBAR SEKOLAH (MOBILE) */
                 background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReSw_vM67L7OxWZt3L59-G27v-_L0i_7IhHkwaFDeK7w&s=10');
                 background-size: cover;
                 background-position: center;
@@ -108,7 +106,6 @@
                 background: linear-gradient(135deg, rgba(6, 78, 59, 0.9) 0%, rgba(5, 150, 105, 0.8) 100%);
             }
 
-            /* Konten teks di gambar disembunyikan di HP */
             .auth-image-content { display: none; }
 
             .auth-form-side {
@@ -117,7 +114,6 @@
                 display: block;
             }
 
-            /* Kotak Form Putih Melayang */
             .auth-form-container {
                 background: #fff;
                 padding: 2.5rem 1.75rem;
@@ -130,9 +126,6 @@
             }
         }
 
-        /* =========================================
-           LOGO MOBILE (Khusus di dalam form)
-           ========================================= */
         .mobile-brand-logo {
             display: flex;
             align-items: center;
@@ -144,19 +137,7 @@
             margin-bottom: 2rem;
             letter-spacing: -0.03em;
         }
-        .mobile-brand-logo .logo-mark {
-            width: 44px; height: 44px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff;
-            font-size: 1.3rem;
-            box-shadow: 0 8px 16px rgba(16,185,129,.3);
-        }
 
-        /* =========================================
-           STYLING FORM (Sama untuk Desktop & Mobile)
-           ========================================= */
         .form-label { font-size: .8125rem; font-weight: 600; color: var(--c-ink-2); margin-bottom: 0.4rem; }
         .form-control {
             border-radius: var(--r-sm); border: 1px solid var(--c-border);
@@ -187,12 +168,10 @@
 <body>
 
     <div class="auth-wrapper">
-        {{-- BACKGROUND / GAMBAR SEKOLAH --}}
         <div class="auth-image-side">
             <div class="auth-image-content">
                 <a href="{{ route('login') }}" class="brand-logo">
-                    <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
-                    LaporAja
+                    <img src="{{ asset('images/logo.png') }}" alt="LaporAja">
                 </a>
                 
                 <div class="image-text">
@@ -206,14 +185,10 @@
             </div>
         </div>
 
-        {{-- FORM LOGIN (Kanan di Desktop, Melayang di Mobile) --}}
         <div class="auth-form-side">
             <div class="auth-form-container">
-                
-                {{-- LOGO KHUSUS TAMPILAN MOBILE --}}
                 <div class="mobile-brand-logo">
-                    <span class="logo-mark"><i class="bi bi-megaphone-fill"></i></span>
-                    LaporAja
+                    <img src="{{ asset('images/logo.png') }}" alt="LaporAja" style="height: 40px; width: auto;">
                 </div>
 
                 @yield('content')

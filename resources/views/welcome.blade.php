@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="theme-color" content="#059669">
     <title>LaporAja — Sistem Pelaporan Sarana Sekolah</title>
+    
+    <!-- Favicon (Diubah ke favicon.png) -->
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -37,7 +40,6 @@
         /* NAVBAR */
         .navbar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; padding: 1rem 0; transition: all 0.3s; }
         .navbar-brand { font-weight: 800; font-size: 1.35rem; color: var(--c-deep); display: flex; align-items: center; gap: 0.5rem; letter-spacing: -0.03em; }
-        .navbar-brand i { color: var(--c-primary); }
         
         .btn-primary { background: var(--c-primary); border-color: var(--c-primary); font-weight: 600; padding: 0.6rem 1.5rem; border-radius: 10px; transition: all 0.2s; color:#fff; text-decoration:none; }
         .btn-primary:hover { background: var(--c-primary-dark); border-color: var(--c-primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(5,150,105,.25); color:#fff; }
@@ -93,7 +95,6 @@
         /* ========== FOOTER ========== */
         .footer-new { background: #064e3b; color: #fff; padding: 4rem 0 1.5rem; margin-top: auto; }
         .footer-title { font-weight: 800; font-size: 1.35rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .footer-title i { color: #10b981; }
         .footer-desc { font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 1.5rem; }
         .footer-heading { font-weight: 700; font-size: 1rem; margin-bottom: 1.25rem; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; }
         .footer-info { display: flex; gap: 0.75rem; margin-bottom: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.8); }
@@ -109,7 +110,7 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ route('landing') }}">
-                <i class="bi bi-megaphone-fill"></i> LaporAja
+                <img src="{{ asset('images/logo.png') }}" alt="LaporAja" style="height: 35px; width: auto;">
             </a>
             <div class="ms-auto d-flex gap-2">
                 <a href="{{ route('login') }}" class="btn btn-primary">
@@ -242,11 +243,15 @@
                 <!-- Kolom 1: Brand & Deskripsi -->
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-title">
-                        <i class="bi bi-megaphone-fill"></i> LaporAja
+                        <img src="{{ asset('images/logo.png') }}" alt="LaporAja" style="height: 40px; width: auto; filter: brightness(0) invert(1);">
                     </div>
                     <p class="footer-desc">
                         Sistem Pelaporan Sarana & Prasarana Sekolah. Membantu siswa dan guru melaporkan kerusakan fasilitas secara cepat, transparan, dan terpantau.
                     </p>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-50 px-2 py-1">XII RPL C</span>
+                        <span class="badge bg-success bg-opacity-25 text-white border border-success border-opacity-50 px-2 py-1">Laravel 11</span>
+                    </div>
                 </div>
 
                 <!-- Kolom 2: Info Sekolah -->
