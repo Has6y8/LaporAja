@@ -6,8 +6,6 @@
 
 @php
     $user = auth()->user();
-    // Cek apakah butuh kolom kanan (Staff untuk update, User untuk buat komplain)
-    $butuhSidebarKanan = $user->isStaff() || $user->isUser();
 @endphp
 
 <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -20,9 +18,16 @@
     </a>
 </div>
 
+@if($errors->any())
+    <div class="alert-soft alert-danger mb-4">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        <div>{{ $errors->first() }}</div>
+    </div>
+@endif
+
 <div class="row g-4">
-    {{-- KIRI: KONTEN UTAMA (Lebar menyesuaikan role) --}}
-    <div class="{{ $butuhSidebarKanan ? 'col-lg-8' : 'col-lg-12' }}">
+    {{-- KIRI: KONTEN UTAMA --}}
+    <div class="col-lg-8">
         <!-- Kartu Info -->
         <div class="card mb-4">
             <div class="card-body p-4">
@@ -33,7 +38,6 @@
                     </span>
                 </div>
 
-                {{-- Kotak Pelapor & Lokasi --}}
                 <div class="row g-3 mb-4">
                     <div class="col-sm-6">
                         <div class="p-3 rounded-3 h-100" style="background:#f8fafc;border:1px solid var(--c-border);">
@@ -55,7 +59,6 @@
                         </div>
                     </div>
                     
-                    {{-- Kotak Ditangani Oleh --}}
                     @if($laporan->staff)
                     <div class="col-12">
                         <div class="p-3 rounded-3" style="background:#ecfdf5;border:1px solid #a7f3d0;">
@@ -106,8 +109,8 @@
             </div>
         @endif
 
-        <!-- Foto Perbaikan -->
-        @if($laporan->foto_perbaikan)
+        <!-- Foto Perbaikan (Hanya muncul jika status Selesai) -->
+        @if($laporan->foto_perbaikan && $laporan->status == 'selesai')
             <div class="card mb-4">
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
                     <h6 class="fw-bold mb-0"><i class="bi bi-check-circle-fill text-success me-2"></i> Bukti Perbaikan</h6>
@@ -128,16 +131,13 @@
             <div class="card-body p-4 pb-2">
                 
                 <div style="position: relative;">
-                    {{-- Garis Vertikal Dirender Manual --}}
                     <div style="position: absolute; top: 10px; bottom: 0; left: 6px; width: 2px; background: #e2e8f0; z-index: 0;"></div>
 
                     @forelse($laporan->statusLogs()->latest()->get() as $log)
                         <div style="position: relative; padding-left: 30px; margin-bottom: 25px;">
                             
-                            {{-- Titik Bulat (Dot) ditaruh persis di atas garis --}}
                             <div style="position: absolute; left: 1px; top: 4px; width: 12px; height: 12px; background-color: var(--c-primary); border: 2px solid #fff; border-radius: 50%; z-index: 1;"></div>
                             
-                            {{-- Konten --}}
                             <div>
                                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-1">
                                     <span class="fw-bold text-dark" style="font-size:.85rem;">
@@ -172,14 +172,13 @@
         </div>
     </div>
 
-    {{-- KANAN: PANEL AKSI (Hanya dirender jika Staff / User) --}}
-    @if($butuhSidebarKanan)
+    {{-- KANAN: PANEL AKSI --}}
     <div class="col-lg-4">
         @if($user->isStaff())
             <div class="card mb-4">
                 <div class="card-body p-4">
                     <h6 class="fw-bold mb-4">Update Progres</h6>
-                    <form method="POST" action="{{ route('staff.updateStatus', $laporan) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('staff.updateStatus', $laporan) }}" enctype="multipart/form-data" id="updateForm">
                         @csrf @method('PUT')
                         
                         <div class="mb-3">
@@ -203,7 +202,7 @@
                             <textarea name="catatan" rows="3" class="form-control" placeholder="Berikan info update ke pelapor..." required>{{ $laporan->catatan_staff }}</textarea>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100" id="btnSubmit">
                             Simpan Perubahan
                         </button>
                     </form>
@@ -226,7 +225,6 @@
             </div>
         @endif
     </div>
-    @endif
 </div>
 
 @endsection
@@ -236,14 +234,35 @@
     function toggleFotoPerbaikan() {
         const status = document.getElementById('statusSelect');
         const wrap = document.getElementById('fotoPerbaikanWrap');
-        const input = wrap ? wrap.querySelector('input[type=file]') : null;
+        if (!wrap) return;
+
+        const input = wrap.querySelector('input[type=file]');
+        
         if (status.value === 'selesai') {
             wrap.style.display = 'block';
             if (input) input.required = true;
         } else {
             wrap.style.display = 'none';
-            if (input) input.required = false;
+            if (input) {
+                input.required = false;
+                input.value = ''; // FIX: Mengosongkan input jika bukan Selesai agar terhapus di DB
+            }
         }
     }
+
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        const status = document.getElementById('statusSelect').value;
+        const fileInput = document.getElementById('input_foto_perbaikan');
+        
+        if (status === 'selesai' && fileInput.files.length === 0 && !{{ $laporan->foto_perbaikan ? 'true' : 'false' }}) {
+            e.preventDefault(); 
+            alert('Anda memilih status Selesai. Silakan unggah foto bukti perbaikan terlebih dahulu!');
+            return false;
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Menyimpan...';
+    });
 </script>
 @endpush

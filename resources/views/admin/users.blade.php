@@ -9,8 +9,7 @@
         <h4>Kelola User</h4>
         <p>Tambah & kelola akun.</p>
     </div>
-    <button class="btn btn-primary d-flex align-items-center gap-2"
-            data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <button class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-plus-lg"></i> Tambah User
     </button>
 </div>
@@ -35,7 +34,7 @@
                             {{ $u->email }}
                             @if($u->nisn_nip) • NIP/NISN: {{ $u->nisn_nip }} @endif
                             @if($u->kelas) • {{ $u->kelas }} @endif
-                            @if($u->jabatan) • {{ $u->jabatan }} @endif
+                            @if($u->role === 'staff' && $u->staffType) • Tipe: {{ $u->staffType->name }} @endif
                         </div>
                     </div>
                 </div>
@@ -153,7 +152,18 @@
                                             <input type="text" name="nisn_nip" class="form-control input-pegawai" value="{{ $u->nisn_nip }}" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label">Jabatan</label>
+                                            <label class="form-label">Tipe Staff</label>
+                                            <select name="staff_type_id" class="form-select input-pegawai">
+                                                <option value="">— Pilih Tipe (Opsional) —</option>
+                                                @foreach(\App\Models\StaffType::all() as $st)
+                                                    <option value="{{ $st->id }}" {{ $u->staff_type_id == $st->id ? 'selected' : '' }}>{{ $st->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label">Jabatan Spesifik</label>
                                             <input type="text" name="jabatan" class="form-control input-pegawai" value="{{ $u->jabatan }}">
                                         </div>
                                     </div>
@@ -267,7 +277,18 @@
                                 <input type="text" name="nisn_nip" class="form-control input-pegawai" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Jabatan</label>
+                                <label class="form-label">Tipe Staff</label>
+                                <select name="staff_type_id" class="form-select input-pegawai">
+                                    <option value="">— Pilih Tipe (Opsional) —</option>
+                                    @foreach(\App\Models\StaffType::all() as $st)
+                                        <option value="{{ $st->id }}">{{ $st->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Jabatan Spesifik</label>
                                 <input type="text" name="jabatan" class="form-control input-pegawai">
                             </div>
                         </div>
@@ -307,9 +328,9 @@
         const wrapStatus = document.getElementById('wrap-status-' + prefix);
 
         document.querySelectorAll(`#form-siswa-${prefix}, #form-guru-${prefix}, #form-pegawai-${prefix}`).forEach(el => el.style.display = 'none');
-        document.querySelectorAll(`#form-siswa-${prefix} input, #form-guru-${prefix} input, #form-pegawai-${prefix} input`).forEach(i => {
+        document.querySelectorAll(`#form-siswa-${prefix} input, #form-guru-${prefix} input, #form-pegawai-${prefix} input, #form-pegawai-${prefix} select`).forEach(i => {
             i.disabled = true;
-            i.required = false; // Matikan required jika form disembunyikan
+            i.required = false;
         });
 
         if (role === 'user') {
@@ -320,30 +341,30 @@
                 document.getElementById(`form-siswa-${prefix}`).style.display = 'block';
                 document.querySelectorAll(`#form-siswa-${prefix} input`).forEach(i => {
                     i.disabled = false;
-                    if (i.name === 'nisn_nip') i.required = true; // NISN wajib
+                    if (i.name === 'nisn_nip') i.required = true; 
                 });
             } else {
                 document.getElementById(`form-guru-${prefix}`).style.display = 'block';
                 document.querySelectorAll(`#form-guru-${prefix} input`).forEach(i => {
                     i.disabled = false;
-                    if (i.name === 'nisn_nip') i.required = true; // NIP wajib
+                    if (i.name === 'nisn_nip') i.required = true; 
                 });
             }
         } else if (role === 'staff') {
             if (wrapTipe) wrapTipe.style.display = 'none';
             if (wrapStatus) wrapStatus.style.display = 'none';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
-            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => {
+            document.querySelectorAll(`#form-pegawai-${prefix} input, #form-pegawai-${prefix} select`).forEach(i => {
                 i.disabled = false;
-                if (i.name === 'nisn_nip') i.required = true; // NIP Pegawai wajib
+                if (i.name === 'nisn_nip') i.required = true; 
             });
         } else if (role === 'admin') {
             if (wrapTipe) wrapTipe.style.display = 'none';
             if (wrapStatus) wrapStatus.style.display = 'block';
             document.getElementById(`form-pegawai-${prefix}`).style.display = 'block';
-            document.querySelectorAll(`#form-pegawai-${prefix} input`).forEach(i => {
+            document.querySelectorAll(`#form-pegawai-${prefix} input, #form-pegawai-${prefix} select`).forEach(i => {
                 i.disabled = false;
-                if (i.name === 'nisn_nip') i.required = true; // NIP Pegawai wajib
+                if (i.name === 'nisn_nip') i.required = true; 
             });
         } else {
             if (wrapTipe) wrapTipe.style.display = 'none';

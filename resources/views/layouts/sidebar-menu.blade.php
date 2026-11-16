@@ -64,11 +64,22 @@
                 <i class="bi bi-chat-square-text-fill"></i> Komplain Masuk
             </a>
         </li>
+
         <li>
             <a href="{{ route('admin.users') }}" class="menu-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                 <i class="bi bi-people-fill"></i> Kelola User
             </a>
         </li>
+
+        {{-- KHUSUS SUPER ADMIN: Menu Tipe Staff --}}
+        @if($user->isSuperAdmin())
+            <li>
+                <a href="{{ route('admin.staff-types') }}" class="menu-item {{ request()->routeIs('admin.staff-types') ? 'active' : '' }}">
+                    <i class="bi bi-tags-fill"></i> Tipe Staff
+                </a>
+            </li>
+        @endif
+
         <li>
             <a href="{{ route('super.approvals') }}" class="menu-item {{ request()->routeIs('super.approvals') ? 'active' : '' }}">
                 <i class="bi bi-person-check-fill"></i> Pengajuan Akun

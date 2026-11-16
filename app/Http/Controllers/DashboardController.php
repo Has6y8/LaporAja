@@ -37,7 +37,8 @@ class DashboardController extends Controller
         if ($user->isUser()) {
             $laporans = Laporan::where('user_id', $user->id)->whereIn('status', ['selesai', 'ditolak'])->latest()->get();
         } elseif ($user->isStaff()) {
-            $laporans = Laporan::whereIn('status', ['selesai', 'ditolak'])->latest()->get();
+            // FILTER: Staff hanya melihat histori yang dia tangani sendiri
+            $laporans = Laporan::where('staff_id', $user->id)->whereIn('status', ['selesai', 'ditolak'])->latest()->get();
         } else {
             $laporans = Laporan::whereIn('status', ['selesai', 'ditolak'])->latest()->get();
         }

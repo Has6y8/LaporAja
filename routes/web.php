@@ -72,7 +72,6 @@ Route::middleware('auth')->group(function () {
 
     // ===== ADMIN & SUPER ADMIN =====
     Route::middleware('role:admin,super_admin')->group(function () {
-        // Update status laporan khusus Admin sudah dihapus (hanya Staff yang bisa)
         Route::get('/admin/komplain', [AdminController::class, 'komplainIndex'])->name('admin.komplain');
         Route::put('/admin/komplain/{komplain}', [AdminController::class, 'komplainRespon'])->name('admin.komplain.respon');
         
@@ -87,9 +86,16 @@ Route::middleware('auth')->group(function () {
         Route::put('/admin/approve/{user}', [SuperAdminController::class, 'approve'])->name('super.approve');
         Route::put('/admin/reject/{user}',  [SuperAdminController::class, 'reject'])->name('super.reject');
     });
+
+    // ===== KHUSUS SUPER ADMIN (Fitur Tipe Staff) =====
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/admin/staff-types', [AdminController::class, 'staffTypeIndex'])->name('admin.staff-types');
+        Route::post('/admin/staff-types', [AdminController::class, 'staffTypeStore'])->name('admin.staff-types.store');
+        Route::delete('/admin/staff-types/{staffType}', [AdminController::class, 'staffTypeDestroy'])->name('admin.staff-types.destroy');
+    });
 });
 
-// ============ RUTE GAMBAR (Storage) ============
+// Rute gambar
 Route::get('/storage/{path}', function ($path) {
     $filePath = storage_path('app/public/' . $path);
     if (!File::exists($filePath)) { abort(404); }
