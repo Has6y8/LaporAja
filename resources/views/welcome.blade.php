@@ -261,17 +261,17 @@
                         <i class="bi bi-geo-alt-fill"></i>
                         <div>
                             <strong>SMK Negeri 5 Surakarta</strong><br>
-                            Jl. Mayjen Sutoyo No. 76, Kec. Banjarsari,<br>
-                            Kota Surakarta, Jawa Tengah 57135
+                            Jl. Adi Sucipto No. 42, Kel. Kerten, Kec. Laweyan,<br>
+                            Kota Surakarta, Jawa Tengah 57143
                         </div>
                     </div>
                     <div class="footer-info">
                         <i class="bi bi-telephone-fill"></i>
-                        <div>(0271) 852547</div>
+                        <div>(0271)713916</div>
                     </div>
                     <div class="footer-info">
                         <i class="bi bi-envelope-fill"></i>
-                        <div>info@smkn5surakarta.sch.id</div>
+                        <div>info@smkn5solo.net</div>
                     </div>
                 </div>
 
