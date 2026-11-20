@@ -33,11 +33,11 @@
         </button>
     </div>
 
+    {{-- PERBAIKAN: Hapus atribut required bawaan HTML agar tidak bentrok dengan JS --}}
     <input type="file" name="{{ $name }}" id="{{ $inputId }}"
            accept="image/*" capture="environment"
            class="d-none"
-           onchange="LaporAja_previewFile(event, '{{ $previewId }}', '{{ $previewWrapId }}')"
-           @if($required && !$existingFoto) required @endif>
+           onchange="LaporAja_previewFile(event, '{{ $previewId }}', '{{ $previewWrapId }}')">
 
     <div class="form-text">Format JPG/PNG, maksimal 2MB.</div>
 </div>

@@ -18,6 +18,7 @@
     </a>
 </div>
 
+{{-- KOTAK ERROR JIKA VALIDASI GAGAL --}}
 @if($errors->any())
     <div class="alert-soft alert-danger mb-4">
         <i class="bi bi-exclamation-circle-fill"></i>
@@ -109,7 +110,7 @@
             </div>
         @endif
 
-        <!-- Foto Perbaikan (Hanya muncul jika status Selesai) -->
+        <!-- Foto Perbaikan -->
         @if($laporan->foto_perbaikan && $laporan->status == 'selesai')
             <div class="card mb-4">
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
@@ -187,7 +188,6 @@
                                 <option value="pending"  {{ $laporan->status == 'pending'  ? 'selected':'' }}>🟡 Pending</option>
                                 <option value="diproses" {{ $laporan->status == 'diproses' ? 'selected':'' }}>🔵 Diproses</option>
                                 <option value="selesai"  {{ $laporan->status == 'selesai'  ? 'selected':'' }}>🟢 Selesai</option>
-                                <option value="ditolak"  {{ $laporan->status == 'ditolak'  ? 'selected':'' }}>🔴 Ditolak</option>
                             </select>
                         </div>
                         
@@ -236,30 +236,27 @@
         const wrap = document.getElementById('fotoPerbaikanWrap');
         if (!wrap) return;
 
-        const input = wrap.querySelector('input[type=file]');
-        
+        // HANYA mengatur tampilan, tidak mengubah atribut 'required' di HTML
         if (status.value === 'selesai') {
             wrap.style.display = 'block';
-            if (input) input.required = true;
         } else {
             wrap.style.display = 'none';
-            if (input) {
-                input.required = false;
-                input.value = ''; // FIX: Mengosongkan input jika bukan Selesai agar terhapus di DB
-            }
         }
     }
 
     document.getElementById('updateForm').addEventListener('submit', function(e) {
         const status = document.getElementById('statusSelect').value;
         const fileInput = document.getElementById('input_foto_perbaikan');
+        const hasExistingPhoto = {{ $laporan->foto_perbaikan ? 'true' : 'false' }};
         
-        if (status === 'selesai' && fileInput.files.length === 0 && !{{ $laporan->foto_perbaikan ? 'true' : 'false' }}) {
+        // VALIDASI JS: Jika pilih selesai, tapi belum ada file baru & belum ada foto lama
+        if (status === 'selesai' && fileInput.files.length === 0 && !hasExistingPhoto) {
             e.preventDefault(); 
-            alert('Anda memilih status Selesai. Silakan unggah foto bukti perbaikan terlebih dahulu!');
+            alert('Gagal menyimpan!\n\nAnda memilih status "Selesai", namun belum mengunggah Foto Bukti Perbaikan. Silakan unggah foto terlebih dahulu.');
             return false;
         }
 
+        // Matikan tombol agar tidak bisa double click
         const btn = document.getElementById('btnSubmit');
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Menyimpan...';
