@@ -385,6 +385,14 @@
         @foreach($users as $u)
             updateForm('{{ $u->id }}');
         @endforeach
+
+        // Cek jika ada error validasi, buka kembali Modal Tambah User secara otomatis
+        @if($errors->any())
+            @if(old('name') && old('email'))
+                var addModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+                addModal.show();
+            @endif
+        @endif
     });
 </script>
 @endpush

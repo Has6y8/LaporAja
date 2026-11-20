@@ -6,7 +6,6 @@
     <meta name="theme-color" content="#059669">
     <title>@yield('title') — LaporAja</title>
     
-    <!-- Favicon (Diubah ke favicon.png) -->
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +82,9 @@
         }
         .form-control::placeholder { color: var(--c-muted-2); }
         .form-control:focus, .form-select:focus { border-color: var(--c-primary-light); box-shadow: 0 0 0 4px rgba(16,185,129,.15); background-color: #fff; }
+        .form-control.is-invalid { border-color: var(--c-danger); background-image: none; }
+        .form-control.is-invalid:focus { box-shadow: 0 0 0 4px rgba(239,68,68,.15); }
+        
         .form-label { font-size: .8125rem; font-weight: 600; color: var(--c-ink-2); margin-bottom: .5rem; }
         .form-text { font-size: .75rem; color: var(--c-muted); }
         textarea.form-control { min-height: 100px; resize: vertical; }
@@ -113,7 +115,6 @@
         .status-pending  { background: #fef3c7; color: #b45309; }
         .status-diproses { background: #dbeafe; color: #1d4ed8; }
         .status-selesai  { background: #d1fae5; color: #047857; }
-        .status-ditolak  { background: #fee2e2; color: #b91c1c; }
 
         /* ========== ALERTS ========== */
         .alert-soft { padding: .85rem 1rem; border-radius: var(--r-sm); font-size: .8125rem; display: flex; align-items: flex-start; gap: .55rem; margin-bottom: 1.25rem; }
@@ -130,13 +131,8 @@
         }
         .sidebar-inner { padding: 1.5rem; display: flex; flex-direction: column; min-height: 100%; }
         
-        /* Logo Sidebar */
         .sidebar-brand { display: flex; align-items: center; gap: .75rem; font-weight: 800; font-size: 1.35rem; color: #fff; padding: .5rem .5rem 1.5rem; text-decoration: none; letter-spacing: -.03em; }
-        .sidebar-brand img { 
-            height: 42px; 
-            width: auto; 
-            filter: brightness(0) invert(1); /* Membuat logo menjadi putih bersih */
-        }
+        .sidebar-brand img { height: 42px; width: auto; filter: brightness(0) invert(1); }
 
         .sidebar-user { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-md); padding: 1rem; display: flex; align-items: center; gap: .85rem; margin-bottom: 2rem; }
         .user-avatar { width: 46px; height: 46px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
@@ -210,7 +206,7 @@
         .modal-body { padding: 1.5rem; }
         .modal-footer { border-top: 1px solid var(--c-border); padding: 1.25rem 1.5rem; gap: .75rem; }
 
-        /* ========== RESPONSIVE (TANPA BOTTOM NAV) ========== */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 991px) {
             .app-sidebar { transform: translateX(-100%); }
             body.drawer-open .app-sidebar { transform: translateX(0); }
@@ -326,6 +322,11 @@
 
     @if(session('success')) showToast(@json(session('success')), 'success'); @endif
     @if(session('error'))   showToast(@json(session('error')), 'danger'); @endif
+    
+    // TAMPILKAN NOTIFIKASI JIKA ADA ERROR VALIDASI FORM
+    @if($errors->any())
+        showToast(@json($errors->first()), 'danger');
+    @endif
 
     /* CAMERA LOGIC */
     window.LaporAjaStreams = {};
